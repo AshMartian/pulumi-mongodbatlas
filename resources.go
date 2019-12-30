@@ -31,6 +31,17 @@ const (
 	mainPkg = "mongodbatlas"
 	// modules:
 	mainMod = "index" // the y module
+	cloudProviderSnapshot = "mongodbatlas_cloud_provider_snapshot"
+	cloudProviderSnapshotJob = "mongodbatlas_cloud_provider_snapshot_restore_job"
+	cluster = "mongodbatlas_cluster"
+	databaseUser = "mongodbatlas_database_user"
+	encryptionAtRest = "mongodbatlas_encryption_at_rest"
+	networkContainer = "mongodbatlas_network_container"
+	networkPeering = "mongodbatlas_network_peering"
+	privateIpMode = "mongodbatlas_private_ip_mode"
+	project = "mongodbatlas_project"
+	projectIpWhiteList = "mongodbatlas_project_ip_whitelist"
+
 )
 
 // makeMember manufactures a type token for the package and the given module and type.
@@ -99,14 +110,18 @@ func Provider() tfbridge.ProviderInfo {
 		Homepage:    "https://pulumi.io",
 		Repository:  "https://github.com/blandman/pulumi-mongodbatlas",
 		Config:      map[string]*tfbridge.SchemaInfo{
-			// Add any required configuration here, or remove the example below if
-			// no additional points are required.
-			// "region": {
-			// 	Type: makeType("region", "Region"),
-			// 	Default: &tfbridge.DefaultInfo{
-			// 		EnvVars: []string{"AWS_REGION", "AWS_DEFAULT_REGION"},
-			// 	},
-			// },
+			/*"privateKey": {
+				Default: &tfbridge.DefaultInfo{
+					Value:   "",
+					EnvVars: []string{"ATLAS_PRIVATE_KEY"},
+				},
+			},
+			"publicKey": {
+				Default: &tfbridge.DefaultInfo{
+					Value:   "",
+					EnvVars: []string{"ATLAS_PUBLIC_KEY"},
+				},
+			},*/
 		},
 		PreConfigureCallback: preConfigureCallback,
 		Resources:            map[string]*tfbridge.ResourceInfo{
@@ -122,11 +137,33 @@ func Provider() tfbridge.ProviderInfo {
 			// 		"tags": {Type: makeType(mainPkg, "Tags")},
 			// 	},
 			// },
+			"mongodbatlas_project": {Tok: makeResource(mainMod, "Project")},
+			"mongodbatlas_cluster": {Tok: makeResource(mainMod, "Cluster")},
+			"mongodbatlas_database_user": {Tok: makeResource(mainMod, "DatabaseUser")},
+			"mongodbatlas_cloud_provider_snapshot": {Tok: makeResource(mainMod, "CloudProviderSnapshot")},
+			"mongodbatlas_cloud_provider_snapshot_restore_job": {Tok: makeResource(mainMod, "CloudProviderSnapshotRestoreJob")},
+			"mongodbatlas_encryption_at_rest": {Tok: makeResource(mainMod, "EncryptionAtRest")},
+			"mongodbatlas_network_container": {Tok: makeResource(mainMod, "NetworkContainer")},
+			"mongodbatlas_network_peering": {Tok: makeResource(mainMod, "NetworkPeering")},
+			"mongodbatlas_private_ip_mode": {Tok: makeResource(mainMod, "PrivateIpMode")},
+			"mongodbatlas_project_ip_whitelist": {Tok: makeResource(mainMod, "ProjectIpWhitelist")},
 		},
 		DataSources: map[string]*tfbridge.DataSourceInfo{
 			// Map each resource in the Terraform provider to a Pulumi function. An example
 			// is below.
 			// "aws_ami": {Tok: makeDataSource(mainMod, "getAmi")},
+			"mongodbatlas_project": {Tok: makeDataSource(mainMod, "getProject")},
+			"mongodbatlas_projects": {Tok: makeDataSource(mainMod, "getProjects")},
+			"mongodbatlas_cluster": {Tok: makeDataSource(mainMod, "getCluster")},
+			"mongodbatlas_clusters": {Tok: makeDataSource(mainMod, "getClusters")},
+			"mongodbatlas_database_user": {Tok: makeDataSource(mainMod, "getDatabaseUser")},
+			"mongodbatlas_database_users": {Tok: makeDataSource(mainMod, "getDatabaseUsers")},
+			"mongodbatlas_cloud_provider_snapshot": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshot")},
+			"mongodbatlas_cloud_provider_snapshot_restore_job": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJob")},
+			"mongodbatlas_cloud_provider_snapshots": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshots")},
+			"mongodbatlas_cloud_provider_snapshot_restore_jobs": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJobs")},
+			"mongodbatlas_network_container": {Tok: makeDataSource(mainMod, "getNetworkContainer")},
+			"mongodbatlas_network_peering": {Tok: makeDataSource(mainMod, "getNetworkPeering")},
 		},
 		JavaScript: &tfbridge.JavaScriptInfo{
 			// List any npm dependencies and their versions

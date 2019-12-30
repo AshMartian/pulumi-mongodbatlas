@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "outDir": "bin",
+        "target": "es2016",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "declaration": true,
+        "sourceMap": true,
+        "stripInternal": true,
+        "experimentalDecorators": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true
+    },
+    "files": [
+        "cloudProviderSnapshot.ts",
+        "cloudProviderSnapshotRestoreJob.ts",
+        "cluster.ts",
+        "config/index.ts",
+        "config/vars.ts",
+        "databaseUser.ts",
+        "encryptionAtRest.ts",
+        "getCloudProviderSnapshot.ts",
+        "getCloudProviderSnapshotRestoreJob.ts",
+        "getCloudProviderSnapshotRestoreJobs.ts",
+        "getCloudProviderSnapshots.ts",
+        "getCluster.ts",
+        "getClusters.ts",
+        "getDatabaseUser.ts",
+        "getDatabaseUsers.ts",
+        "getNetworkContainer.ts",
+        "getNetworkPeering.ts",
+        "getProject.ts",
+        "getProjects.ts",
+        "index.ts",
+        "networkContainer.ts",
+        "networkPeering.ts",
+        "privateIpMode.ts",
+        "project.ts",
+        "projectIpWhitelist.ts",
+        "provider.ts",
+        "types/index.ts",
+        "types/input.ts",
+        "types/output.ts",
+        "utilities.ts"
+    ]
+}
+
