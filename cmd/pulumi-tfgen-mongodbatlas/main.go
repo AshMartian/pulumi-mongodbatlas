@@ -15,7 +15,7 @@
 package main
 
 import (
-	"github.com/pulumi/pulumi-terraform-bridge/pkg/tfgen"
+	"github.com/pulumi/pulumi-terraform/pkg/tfgen"
 
 	mongodbatlas "github.com/blandman/pulumi-mongodbatlas"
 	"github.com/blandman/pulumi-mongodbatlas/pkg/version"

@@ -3,7 +3,7 @@ include build/common.mk
 
 PACK             := mongodbatlas
 PACKDIR          := sdk
-PROJECT          := github.com/pulumi/pulumi-${PACK}
+PROJECT          := github.com/blandman/pulumi-${PACK}
 NODE_MODULE_NAME := @pulumi/${PACK}
 TF_NAME          := ${PACK}
 
