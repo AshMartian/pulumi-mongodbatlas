@@ -163,7 +163,9 @@ func Provider() tfbridge.ProviderInfo {
 			"mongodbatlas_cloud_provider_snapshots": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshots")},
 			"mongodbatlas_cloud_provider_snapshot_restore_jobs": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJobs")},
 			"mongodbatlas_network_container": {Tok: makeDataSource(mainMod, "getNetworkContainer")},
+			"mongodbatlas_network_containers": {Tok: makeDataSource(mainMod, "getNetworkContainers")},
 			"mongodbatlas_network_peering": {Tok: makeDataSource(mainMod, "getNetworkPeering")},
+			"mongodbatlas_network_peerings": {Tok: makeDataSource(mainMod, "getNetworkPeerings")},
 		},
 		JavaScript: &tfbridge.JavaScriptInfo{
 			// List any npm dependencies and their versions

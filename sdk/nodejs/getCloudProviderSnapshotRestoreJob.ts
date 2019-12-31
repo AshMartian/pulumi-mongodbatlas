@@ -35,7 +35,7 @@ import * as utilities from "./utilities";
  *     projectId: "5cf5a45a9ccf6400e60981b6",
  *     snapshotId: testCloudProviderSnapshot.id,
  * });
- * const testCloudProviderSnapshotRestoreJob = pulumi.all([testMongodbatlasCloudProviderSnapshotRestoreJob.clusterName, testMongodbatlasCloudProviderSnapshotRestoreJob.id, testMongodbatlasCloudProviderSnapshotRestoreJob.projectId]).apply(([clusterName, id, projectId]) => mongodbatlas.CloudProviderSnapshotRestoreJob({
+ * const testCloudProviderSnapshotRestoreJob = pulumi.all([testMongodbatlasCloudProviderSnapshotRestoreJob.clusterName, testMongodbatlasCloudProviderSnapshotRestoreJob.id, testMongodbatlasCloudProviderSnapshotRestoreJob.projectId]).apply(([clusterName, id, projectId]) => mongodbatlas.getCloudProviderSnapshotRestoreJob({
  *     clusterName: clusterName,
  *     jobId: id,
  *     projectId: projectId,

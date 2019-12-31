@@ -29,7 +29,9 @@ from .get_clusters import *
 from .get_database_user import *
 from .get_database_users import *
 from .get_network_container import *
+from .get_network_containers import *
 from .get_network_peering import *
+from .get_network_peerings import *
 from .get_project import *
 from .get_projects import *
 from .provider import *

@@ -546,6 +546,133 @@ export interface GetDatabaseUsersResultRole {
     roleName: string;
 }
 
+export interface GetNetworkContainersResult {
+    /**
+     * CIDR block that Atlas uses for your clusters. Atlas uses the specified CIDR block for all other Network Peering connections created in the project. The Atlas CIDR block must be at least a /24 and at most a /21 in one of the following [private networks](https://tools.ietf.org/html/rfc1918.html#section-3).
+     */
+    atlasCidrBlock: string;
+    /**
+     * Unique identifer of the Azure subscription in which the VNet resides.
+     */
+    azureSubscriptionId: string;
+    /**
+     * Unique identifier of the GCP project in which the Network Peering connection resides.
+     */
+    gcpProjectId: string;
+    /**
+     * The Network Peering Container ID.
+     */
+    id: string;
+    /**
+     * Name of the Network Peering connection in the Atlas project.
+     */
+    networkName: string;
+    /**
+     * Cloud provider for this Network Peering connection. If omitted, Atlas sets this parameter to AWS.
+     */
+    providerName: string;
+    /**
+     * Indicates whether the project has Network Peering connections deployed in the container.
+     */
+    provisioned: boolean;
+    /**
+     * Azure region where the container resides.
+     */
+    region: string;
+    /**
+     * AWS region.
+     */
+    regionName: string;
+    /**
+     * The name of the Azure VNet. This value is null until you provision an Azure VNet in the container.
+     */
+    vnetName: string;
+    /**
+     * Unique identifier of the project’s VPC.
+     */
+    vpcId: string;
+}
+
+export interface GetNetworkPeeringsResult {
+    /**
+     * Specifies the region where the peer VPC resides. For complete lists of supported regions, see [Amazon Web Services](https://docs.atlas.mongodb.com/reference/amazon-aws/).
+     */
+    accepterRegionName: string;
+    /**
+     * Unique identifier for an Azure AD directory.
+     */
+    atlasCidrBlock: string;
+    /**
+     * Account ID of the owner of the peer VPC.
+     */
+    awsAccountId: string;
+    /**
+     * Unique identifier for an Azure AD directory.
+     */
+    azureDirectoryId: string;
+    /**
+     * Unique identifer of the Azure subscription in which the VNet resides.
+     */
+    azureSubscriptionId: string;
+    /**
+     * Unique identifier for the peering connection.
+     */
+    connectionId: string;
+    containerId: string;
+    /**
+     * When `"status" : "FAILED"`, Atlas provides a description of the error.
+     */
+    errorMessage: string;
+    /**
+     * Description of the Atlas error when `status` is `Failed`, Otherwise, Atlas returns `null`.
+     */
+    errorState: string;
+    /**
+     * Error state, if any. The VPC peering connection error state value can be one of the following: `REJECTED`, `EXPIRED`, `INVALID_ARGUMENT`.
+     */
+    errorStateName: string;
+    /**
+     * GCP project ID of the owner of the network peer. 
+     */
+    gcpProjectId: string;
+    /**
+     * Name of the network peer to which Atlas connects.
+     */
+    networkName: string;
+    /**
+     * Atlas assigned unique ID for the peering connection.
+     */
+    peeringId: string;
+    /**
+     * Cloud provider for this VPC peering connection. If omitted, Atlas sets this parameter to AWS. (Possible Values `AWS`, `AZURE`, `GCP`).
+     */
+    providerName: string;
+    /**
+     * Name of your Azure resource group. 
+     */
+    resourceGroupName: string;
+    /**
+     * Peer VPC CIDR block or subnet.
+     */
+    routeTableCidrBlock: string;
+    /**
+     * Status of the Atlas network peering connection: `ADDING_PEER`, `AVAILABLE`, `FAILED`, `DELETING`, `WAITING_FOR_USER`.
+     */
+    status: string;
+    /**
+     * The VPC peering connection status value can be one of the following: `INITIATING`, `PENDING_ACCEPTANCE`, `FAILED`, `FINALIZING`, `AVAILABLE`, `TERMINATING`.
+     */
+    statusName: string;
+    /**
+     * Name of your Azure VNet.
+     */
+    vnetName: string;
+    /**
+     * Unique identifier of the peer VPC.
+     */
+    vpcId: string;
+}
+
 export interface GetProjectsResult {
     clusterCount: number;
     created: string;

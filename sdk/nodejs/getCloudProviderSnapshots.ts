@@ -23,7 +23,7 @@ import * as utilities from "./utilities";
  *     groupId: "5d0f1f73cf09a29120e173cf",
  *     retentionInDays: 1,
  * });
- * const testCloudProviderSnapshots = pulumi.all([testMongodbatlasCloudProviderSnapshots.clusterName, testMongodbatlasCloudProviderSnapshots.groupId]).apply(([clusterName, groupId]) => mongodbatlas.CloudProviderSnapshots({
+ * const testCloudProviderSnapshots = pulumi.all([testMongodbatlasCloudProviderSnapshots.clusterName, testMongodbatlasCloudProviderSnapshots.groupId]).apply(([clusterName, groupId]) => mongodbatlas.getCloudProviderSnapshots({
  *     clusterName: clusterName,
  *     groupId: groupId,
  * }));
