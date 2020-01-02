@@ -57,11 +57,11 @@ This package is available in many languages in the standard packaging formats.
 
 To use from JavaScript or TypeScript in Node.js, install using either `npm`:
 
-    $ npm install @pulumi/xyx
+    $ npm install pulumi-mongodbatlas
 
 or `yarn`:
 
-    $ yarn add @pulumi/xyx
+    $ yarn add pulumi-mongodbatlas
 
 ### Python
 
@@ -73,7 +73,7 @@ To use from Python, install using `pip`:
 
 To use from Go, use `go get` to grab the latest version of the library
 
-    $ go get github.com/pulumi/pulumi-mongodbatlas/sdk/go/...
+    $ go get github.com/blandman/pulumi-mongodbatlas/sdk/go/...
 
 ## Configuration
 
