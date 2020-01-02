@@ -1,6 +1,6 @@
 /vendor/
 .pulumi
-**/bin/
+#**/bin/
 Pulumi.*.yaml
 sdk/nodejs/node_modules
 

@@ -1,5 +1,5 @@
 {
-    "name": "pulumi-mongodbatlas",
+    "name": "@pulumi/mongodbatlas",
     "version": "${VERSION}",
     "description": "A Pulumi package for creating and managing mongodbatlas cloud resources.",
     "keywords": [
@@ -7,12 +7,11 @@
         "mongodbatlas"
     ],
     "homepage": "https://pulumi.io",
-    "repository": "https://github.com/blandman/pulumi-mongodbatlas/sdk/nodejs/bin",
+    "repository": "https://github.com/blandman/pulumi-mongodbatlas",
     "license": "Apache-2.0",
     "scripts": {
         "build": "tsc"
     },
-    "version": "v0.0.2",
     "dependencies": {
         "@pulumi/pulumi": "latest"
     },
