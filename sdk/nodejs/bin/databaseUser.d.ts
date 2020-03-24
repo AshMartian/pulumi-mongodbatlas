@@ -20,12 +20,14 @@ export declare class DatabaseUser extends pulumi.CustomResource {
      */
     static isInstance(obj: any): obj is DatabaseUser;
     /**
+     * The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is always the admin database.
+     */
+    readonly authDatabaseName: pulumi.Output<string | undefined>;
+    /**
      * Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
      */
-    readonly databaseName: pulumi.Output<string>;
-    /**
-     * User's initial password. This is required to create the user but may be removed after. Password may show up in logs, and it will be stored in the state file as plain-text. Password can be changed in the web interface to increase security.
-     */
+    readonly databaseName: pulumi.Output<string | undefined>;
+    readonly labels: pulumi.Output<outputs.DatabaseUserLabel[]>;
     readonly password: pulumi.Output<string | undefined>;
     /**
      * The unique ID for the project to create the database user.
@@ -40,6 +42,10 @@ export declare class DatabaseUser extends pulumi.CustomResource {
      */
     readonly username: pulumi.Output<string>;
     /**
+     * X.509 method by which the provided username is authenticated. If no value is given, Atlas uses the default value of NONE. The accepted types are:
+     */
+    readonly x509Type: pulumi.Output<string | undefined>;
+    /**
      * Create a DatabaseUser resource with the given unique name, arguments, and options.
      *
      * @param name The _unique_ name of the resource.
@@ -53,12 +59,14 @@ export declare class DatabaseUser extends pulumi.CustomResource {
  */
 export interface DatabaseUserState {
     /**
+     * The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is always the admin database.
+     */
+    readonly authDatabaseName?: pulumi.Input<string>;
+    /**
      * Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
      */
     readonly databaseName?: pulumi.Input<string>;
-    /**
-     * User's initial password. This is required to create the user but may be removed after. Password may show up in logs, and it will be stored in the state file as plain-text. Password can be changed in the web interface to increase security.
-     */
+    readonly labels?: pulumi.Input<pulumi.Input<inputs.DatabaseUserLabel>[]>;
     readonly password?: pulumi.Input<string>;
     /**
      * The unique ID for the project to create the database user.
@@ -72,18 +80,24 @@ export interface DatabaseUserState {
      * Username for authenticating to MongoDB.
      */
     readonly username?: pulumi.Input<string>;
+    /**
+     * X.509 method by which the provided username is authenticated. If no value is given, Atlas uses the default value of NONE. The accepted types are:
+     */
+    readonly x509Type?: pulumi.Input<string>;
 }
 /**
  * The set of arguments for constructing a DatabaseUser resource.
  */
 export interface DatabaseUserArgs {
     /**
+     * The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is always the admin database.
+     */
+    readonly authDatabaseName?: pulumi.Input<string>;
+    /**
      * Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
      */
-    readonly databaseName: pulumi.Input<string>;
-    /**
-     * User's initial password. This is required to create the user but may be removed after. Password may show up in logs, and it will be stored in the state file as plain-text. Password can be changed in the web interface to increase security.
-     */
+    readonly databaseName?: pulumi.Input<string>;
+    readonly labels?: pulumi.Input<pulumi.Input<inputs.DatabaseUserLabel>[]>;
     readonly password?: pulumi.Input<string>;
     /**
      * The unique ID for the project to create the database user.
@@ -97,4 +111,8 @@ export interface DatabaseUserArgs {
      * Username for authenticating to MongoDB.
      */
     readonly username: pulumi.Input<string>;
+    /**
+     * X.509 method by which the provided username is authenticated. If no value is given, Atlas uses the default value of NONE. The accepted types are:
+     */
+    readonly x509Type?: pulumi.Input<string>;
 }

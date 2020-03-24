@@ -16,6 +16,7 @@ func LookupNetworkContainers(ctx *pulumi.Context, args *GetNetworkContainersArgs
 	inputs := make(map[string]interface{})
 	if args != nil {
 		inputs["projectId"] = args.ProjectId
+		inputs["providerName"] = args.ProviderName
 	}
 	outputs, err := ctx.Invoke("mongodbatlas:index/getNetworkContainers:getNetworkContainers", inputs)
 	if err != nil {
@@ -23,6 +24,7 @@ func LookupNetworkContainers(ctx *pulumi.Context, args *GetNetworkContainersArgs
 	}
 	return &GetNetworkContainersResult{
 		ProjectId: outputs["projectId"],
+		ProviderName: outputs["providerName"],
 		Results: outputs["results"],
 		Id: outputs["id"],
 	}, nil
@@ -32,11 +34,15 @@ func LookupNetworkContainers(ctx *pulumi.Context, args *GetNetworkContainersArgs
 type GetNetworkContainersArgs struct {
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
+	// Cloud provider for this Network peering container. Accepted values are AWS, GCP, and Azure.
+	ProviderName interface{}
 }
 
 // A collection of values returned by getNetworkContainers.
 type GetNetworkContainersResult struct {
 	ProjectId interface{}
+	// Cloud provider for this Network Peering connection. If omitted, Atlas sets this parameter to AWS.
+	ProviderName interface{}
 	// A list where each represents a Network Peering Container.
 	Results interface{}
 	// id is the provider-assigned unique ID for this managed resource.

@@ -14,11 +14,10 @@ require (
 	github.com/gostaticanalysis/analysisutil v0.0.3 // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/hashicorp/terraform v0.12.9
-	github.com/hashicorp/vault/api v1.0.5-0.20190909201928-35325e2c3262 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/mattn/go-isatty v0.0.11 // indirect
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/pierrec/lz4 v2.2.6+incompatible // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/pulumi/pulumi v1.8.0
 	github.com/pulumi/pulumi-terraform v0.18.4-0.20191202134852-87cfb4dc8ae1
 	github.com/pulumi/pulumi-terraform-bridge v1.5.2 // indirect
@@ -27,7 +26,7 @@ require (
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/stretchr/testify v1.4.1-0.20191106224347-f1bd0923b832
-	github.com/terraform-providers/terraform-provider-mongodbatlas v0.3.1
+	github.com/terraform-providers/terraform-provider-mongodbatlas v0.4.2
 	golang.org/x/sys v0.0.0-20191228213918-04cbcbbfeed8 // indirect
 	golang.org/x/tools v0.0.0-20191230220329-2aa90c603ae3 // indirect
 	gopkg.in/ini.v1 v1.51.1 // indirect

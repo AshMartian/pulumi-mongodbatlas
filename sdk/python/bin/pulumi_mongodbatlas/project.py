@@ -20,20 +20,33 @@ class Project(pulumi.CustomResource):
     """
     name: pulumi.Output[str]
     """
-    The name of the project you want to create.
+    The name of the project you want to create. (Cannot be changed via this Provider after creation.)
     """
     org_id: pulumi.Output[str]
     """
     The ID of the organization you want to create the project within.
     """
-    def __init__(__self__, resource_name, opts=None, name=None, org_id=None, __props__=None, __name__=None, __opts__=None):
+    teams: pulumi.Output[list]
+    def __init__(__self__, resource_name, opts=None, name=None, org_id=None, teams=None, __props__=None, __name__=None, __opts__=None):
         """
-        `.Project` provides a Project resource. This allows project to be created.
+        Create a Project resource with the given unique name, props, and options.
         
         :param str resource_name: The name of the resource.
         :param pulumi.ResourceOptions opts: Options for the resource.
-        :param pulumi.Input[str] name: The name of the project you want to create.
+        :param pulumi.Input[str] name: The name of the project you want to create. (Cannot be changed via this Provider after creation.)
         :param pulumi.Input[str] org_id: The ID of the organization you want to create the project within.
+        
+        The **teams** object supports the following:
+        
+          * `roleNames` (`pulumi.Input[list]`) - Each string in the array represents a project role you want to assign to the team. Every user associated with the team inherits these roles. You must specify an array even if you are only associating a single role with the team.
+            The following are valid roles:
+            * `GROUP_OWNER`
+            * `GROUP_READ_ONLY`
+            * `GROUP_DATA_ACCESS_ADMIN`
+            * `GROUP_DATA_ACCESS_READ_WRITE`
+            * `GROUP_DATA_ACCESS_READ_ONLY`
+            * `GROUP_CLUSTER_MANAGER`
+          * `teamId` (`pulumi.Input[str]`) - The unique identifier of the team you want to associate with the project. The team and project must share the same parent organization.
 
         > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/r/project.html.markdown.
         """
@@ -58,6 +71,7 @@ class Project(pulumi.CustomResource):
             if org_id is None:
                 raise TypeError("Missing required property 'org_id'")
             __props__['org_id'] = org_id
+            __props__['teams'] = teams
             __props__['cluster_count'] = None
             __props__['created'] = None
         super(Project, __self__).__init__(
@@ -67,7 +81,7 @@ class Project(pulumi.CustomResource):
             opts)
 
     @staticmethod
-    def get(resource_name, id, opts=None, cluster_count=None, created=None, name=None, org_id=None):
+    def get(resource_name, id, opts=None, cluster_count=None, created=None, name=None, org_id=None, teams=None):
         """
         Get an existing Project resource's state with the given name, id, and optional extra
         properties used to qualify the lookup.
@@ -77,8 +91,20 @@ class Project(pulumi.CustomResource):
         :param pulumi.ResourceOptions opts: Options for the resource.
         :param pulumi.Input[float] cluster_count: The number of Atlas clusters deployed in the project..
         :param pulumi.Input[str] created: The ISO-8601-formatted timestamp of when Atlas created the project..
-        :param pulumi.Input[str] name: The name of the project you want to create.
+        :param pulumi.Input[str] name: The name of the project you want to create. (Cannot be changed via this Provider after creation.)
         :param pulumi.Input[str] org_id: The ID of the organization you want to create the project within.
+        
+        The **teams** object supports the following:
+        
+          * `roleNames` (`pulumi.Input[list]`) - Each string in the array represents a project role you want to assign to the team. Every user associated with the team inherits these roles. You must specify an array even if you are only associating a single role with the team.
+            The following are valid roles:
+            * `GROUP_OWNER`
+            * `GROUP_READ_ONLY`
+            * `GROUP_DATA_ACCESS_ADMIN`
+            * `GROUP_DATA_ACCESS_READ_WRITE`
+            * `GROUP_DATA_ACCESS_READ_ONLY`
+            * `GROUP_CLUSTER_MANAGER`
+          * `teamId` (`pulumi.Input[str]`) - The unique identifier of the team you want to associate with the project. The team and project must share the same parent organization.
 
         > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/r/project.html.markdown.
         """
@@ -89,6 +115,7 @@ class Project(pulumi.CustomResource):
         __props__["created"] = created
         __props__["name"] = name
         __props__["org_id"] = org_id
+        __props__["teams"] = teams
         return Project(resource_name, opts=opts, __props__=__props__)
     def translate_output_property(self, prop):
         return tables._CAMEL_TO_SNAKE_CASE_TABLE.get(prop) or prop

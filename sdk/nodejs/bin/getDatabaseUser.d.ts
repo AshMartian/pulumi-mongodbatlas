@@ -15,6 +15,11 @@ export declare function getDatabaseUser(args: GetDatabaseUserArgs, opts?: pulumi
  */
 export interface GetDatabaseUserArgs {
     /**
+     * The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is almost always the admin database, for X509 it is $external.
+     */
+    readonly authDatabaseName?: string;
+    readonly databaseName?: string;
+    /**
      * The unique ID for the project to create the database user.
      */
     readonly projectId: string;
@@ -27,16 +32,22 @@ export interface GetDatabaseUserArgs {
  * A collection of values returned by getDatabaseUser.
  */
 export interface GetDatabaseUserResult {
+    readonly authDatabaseName?: string;
     /**
      * Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
      */
-    readonly databaseName: string;
+    readonly databaseName?: string;
+    readonly labels: outputs.GetDatabaseUserLabel[];
     readonly projectId: string;
     /**
      * List of user’s roles and the databases / collections on which the roles apply. A role allows the user to perform particular actions on the specified database. A role on the admin database can include privileges that apply to the other databases as well. See Roles below for more details.
      */
     readonly roles: outputs.GetDatabaseUserRole[];
     readonly username: string;
+    /**
+     * X.509 method by which the provided username is authenticated.
+     */
+    readonly x509Type: string;
     /**
      * id is the provider-assigned unique ID for this managed resource.
      */

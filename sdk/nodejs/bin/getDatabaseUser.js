@@ -21,6 +21,8 @@ function getDatabaseUser(args, opts) {
         opts.version = utilities.getVersion();
     }
     const promise = pulumi.runtime.invoke("mongodbatlas:index/getDatabaseUser:getDatabaseUser", {
+        "authDatabaseName": args.authDatabaseName,
+        "databaseName": args.databaseName,
         "projectId": args.projectId,
         "username": args.username,
     }, opts);

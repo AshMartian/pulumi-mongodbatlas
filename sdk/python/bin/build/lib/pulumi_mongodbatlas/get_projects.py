@@ -38,7 +38,11 @@ class AwaitableGetProjectsResult(GetProjectsResult):
 
 def get_projects(opts=None):
     """
-    Use this data source to access information about an existing resource.
+    `.getProjects` describe all Projects. This represents projects that have been created.
+    
+    > **NOTE:** Groups and projects are synonymous terms. You may find `groupId` in the official documentation.
+
+    > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/d/projects.html.markdown.
     """
     __args__ = dict()
 

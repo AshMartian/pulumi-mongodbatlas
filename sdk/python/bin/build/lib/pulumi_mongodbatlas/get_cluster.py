@@ -13,7 +13,7 @@ class GetClusterResult:
     """
     A collection of values returned by getCluster.
     """
-    def __init__(__self__, auto_scaling_disk_gb_enabled=None, backing_provider_name=None, backup_enabled=None, bi_connector=None, cluster_type=None, disk_size_gb=None, encryption_at_rest_provider=None, mongo_db_major_version=None, mongo_db_version=None, mongo_uri=None, mongo_uri_updated=None, mongo_uri_with_options=None, name=None, num_shards=None, paused=None, project_id=None, provider_backup_enabled=None, provider_disk_iops=None, provider_disk_type_name=None, provider_encrypt_ebs_volume=None, provider_instance_size_name=None, provider_name=None, provider_region_name=None, provider_volume_type=None, replication_factor=None, replication_specs=None, srv_address=None, state_name=None, id=None):
+    def __init__(__self__, auto_scaling_disk_gb_enabled=None, backing_provider_name=None, backup_enabled=None, bi_connector=None, cluster_type=None, disk_size_gb=None, encryption_at_rest_provider=None, labels=None, mongo_db_major_version=None, mongo_db_version=None, mongo_uri=None, mongo_uri_updated=None, mongo_uri_with_options=None, name=None, num_shards=None, paused=None, pit_enabled=None, project_id=None, provider_backup_enabled=None, provider_disk_iops=None, provider_disk_type_name=None, provider_encrypt_ebs_volume=None, provider_instance_size_name=None, provider_name=None, provider_region_name=None, provider_volume_type=None, replication_factor=None, replication_specs=None, srv_address=None, state_name=None, id=None):
         if auto_scaling_disk_gb_enabled and not isinstance(auto_scaling_disk_gb_enabled, bool):
             raise TypeError("Expected argument 'auto_scaling_disk_gb_enabled' to be a bool")
         __self__.auto_scaling_disk_gb_enabled = auto_scaling_disk_gb_enabled
@@ -48,7 +48,7 @@ class GetClusterResult:
             raise TypeError("Expected argument 'disk_size_gb' to be a float")
         __self__.disk_size_gb = disk_size_gb
         """
-        Indicates the size in gigabytes of the server’s root volume.
+        Indicates the size in gigabytes of the server’s root volume (AWS/GCP Only).
         """
         if encryption_at_rest_provider and not isinstance(encryption_at_rest_provider, str):
             raise TypeError("Expected argument 'encryption_at_rest_provider' to be a str")
@@ -56,6 +56,9 @@ class GetClusterResult:
         """
         Indicates whether Encryption at Rest is enabled or disabled.
         """
+        if labels and not isinstance(labels, list):
+            raise TypeError("Expected argument 'labels' to be a list")
+        __self__.labels = labels
         if mongo_db_major_version and not isinstance(mongo_db_major_version, str):
             raise TypeError("Expected argument 'mongo_db_major_version' to be a str")
         __self__.mongo_db_major_version = mongo_db_major_version
@@ -90,7 +93,7 @@ class GetClusterResult:
             raise TypeError("Expected argument 'name' to be a str")
         __self__.name = name
         """
-        Name of the cluster as it appears in Atlas.
+        The name of the current plugin
         """
         if num_shards and not isinstance(num_shards, float):
             raise TypeError("Expected argument 'num_shards' to be a float")
@@ -103,6 +106,12 @@ class GetClusterResult:
         __self__.paused = paused
         """
         Flag that indicates whether the cluster is paused or not.
+        """
+        if pit_enabled and not isinstance(pit_enabled, bool):
+            raise TypeError("Expected argument 'pit_enabled' to be a bool")
+        __self__.pit_enabled = pit_enabled
+        """
+        Flag that indicates if the cluster uses Point-in-Time backups.
         """
         if project_id and not isinstance(project_id, str):
             raise TypeError("Expected argument 'project_id' to be a str")
@@ -123,7 +132,7 @@ class GetClusterResult:
             raise TypeError("Expected argument 'provider_disk_type_name' to be a str")
         __self__.provider_disk_type_name = provider_disk_type_name
         """
-        Describes Azure disk type of the server’s root volume.
+        Describes Azure disk type of the server’s root volume (Azure Only).
         """
         if provider_encrypt_ebs_volume and not isinstance(provider_encrypt_ebs_volume, bool):
             raise TypeError("Expected argument 'provider_encrypt_ebs_volume' to be a bool")
@@ -204,6 +213,7 @@ class AwaitableGetClusterResult(GetClusterResult):
             cluster_type=self.cluster_type,
             disk_size_gb=self.disk_size_gb,
             encryption_at_rest_provider=self.encryption_at_rest_provider,
+            labels=self.labels,
             mongo_db_major_version=self.mongo_db_major_version,
             mongo_db_version=self.mongo_db_version,
             mongo_uri=self.mongo_uri,
@@ -212,6 +222,7 @@ class AwaitableGetClusterResult(GetClusterResult):
             name=self.name,
             num_shards=self.num_shards,
             paused=self.paused,
+            pit_enabled=self.pit_enabled,
             project_id=self.project_id,
             provider_backup_enabled=self.provider_backup_enabled,
             provider_disk_iops=self.provider_disk_iops,
@@ -260,6 +271,7 @@ def get_cluster(name=None,project_id=None,opts=None):
         cluster_type=__ret__.get('clusterType'),
         disk_size_gb=__ret__.get('diskSizeGb'),
         encryption_at_rest_provider=__ret__.get('encryptionAtRestProvider'),
+        labels=__ret__.get('labels'),
         mongo_db_major_version=__ret__.get('mongoDbMajorVersion'),
         mongo_db_version=__ret__.get('mongoDbVersion'),
         mongo_uri=__ret__.get('mongoUri'),
@@ -268,6 +280,7 @@ def get_cluster(name=None,project_id=None,opts=None):
         name=__ret__.get('name'),
         num_shards=__ret__.get('numShards'),
         paused=__ret__.get('paused'),
+        pit_enabled=__ret__.get('pitEnabled'),
         project_id=__ret__.get('projectId'),
         provider_backup_enabled=__ret__.get('providerBackupEnabled'),
         provider_disk_iops=__ret__.get('providerDiskIops'),

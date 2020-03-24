@@ -1,18 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
+import * as inputs from "./types/input";
+import * as outputs from "./types/output";
 /**
- * `mongodbatlas..Project` provides a Project resource. This allows project to be created.
- *
- * ## Example Usage
- *
- * ```typescript
- * import * as pulumi from "@pulumi/pulumi";
- * import * as mongodbatlas from "@pulumi/mongodbatlas";
- *
- * const myProject = new mongodbatlas.Project("myProject", {
- *     orgId: "5b93ff2f96e82120w0aaec19",
- * });
- * ```
- *
  * > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/r/project.html.markdown.
  */
 export declare class Project extends pulumi.CustomResource {
@@ -39,13 +28,14 @@ export declare class Project extends pulumi.CustomResource {
      */
     readonly created: pulumi.Output<string>;
     /**
-     * The name of the project you want to create.
+     * The name of the project you want to create. (Cannot be changed via this Provider after creation.)
      */
     readonly name: pulumi.Output<string>;
     /**
      * The ID of the organization you want to create the project within.
      */
     readonly orgId: pulumi.Output<string>;
+    readonly teams: pulumi.Output<outputs.ProjectTeam[] | undefined>;
     /**
      * Create a Project resource with the given unique name, arguments, and options.
      *
@@ -68,24 +58,26 @@ export interface ProjectState {
      */
     readonly created?: pulumi.Input<string>;
     /**
-     * The name of the project you want to create.
+     * The name of the project you want to create. (Cannot be changed via this Provider after creation.)
      */
     readonly name?: pulumi.Input<string>;
     /**
      * The ID of the organization you want to create the project within.
      */
     readonly orgId?: pulumi.Input<string>;
+    readonly teams?: pulumi.Input<pulumi.Input<inputs.ProjectTeam>[]>;
 }
 /**
  * The set of arguments for constructing a Project resource.
  */
 export interface ProjectArgs {
     /**
-     * The name of the project you want to create.
+     * The name of the project you want to create. (Cannot be changed via this Provider after creation.)
      */
     readonly name?: pulumi.Input<string>;
     /**
      * The ID of the organization you want to create the project within.
      */
     readonly orgId: pulumi.Input<string>;
+    readonly teams?: pulumi.Input<pulumi.Input<inputs.ProjectTeam>[]>;
 }

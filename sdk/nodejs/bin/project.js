@@ -5,19 +5,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 /**
- * `mongodbatlas..Project` provides a Project resource. This allows project to be created.
- *
- * ## Example Usage
- *
- * ```typescript
- * import * as pulumi from "@pulumi/pulumi";
- * import * as mongodbatlas from "@pulumi/mongodbatlas";
- *
- * const myProject = new mongodbatlas.Project("myProject", {
- *     orgId: "5b93ff2f96e82120w0aaec19",
- * });
- * ```
- *
  * > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/r/project.html.markdown.
  */
 class Project extends pulumi.CustomResource {
@@ -29,6 +16,7 @@ class Project extends pulumi.CustomResource {
             inputs["created"] = state ? state.created : undefined;
             inputs["name"] = state ? state.name : undefined;
             inputs["orgId"] = state ? state.orgId : undefined;
+            inputs["teams"] = state ? state.teams : undefined;
         }
         else {
             const args = argsOrState;
@@ -37,6 +25,7 @@ class Project extends pulumi.CustomResource {
             }
             inputs["name"] = args ? args.name : undefined;
             inputs["orgId"] = args ? args.orgId : undefined;
+            inputs["teams"] = args ? args.teams : undefined;
             inputs["clusterCount"] = undefined /*out*/;
             inputs["created"] = undefined /*out*/;
         }

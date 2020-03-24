@@ -1,6 +1,6 @@
 {
     "name": "@pulumi/mongodbatlas",
-    "version": "v0.0.2-dev.1577751581+g49707d2.dirty",
+    "version": "v0.4.2+dirty",
     "description": "A Pulumi package for creating and managing mongodbatlas cloud resources.",
     "keywords": [
         "pulumi",
@@ -12,7 +12,6 @@
     "scripts": {
         "build": "tsc"
     },
-    "version": "v0.0.3",
     "dependencies": {
         "@pulumi/pulumi": "latest"
     },

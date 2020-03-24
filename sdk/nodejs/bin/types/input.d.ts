@@ -51,6 +51,16 @@ export interface ClusterBiConnector {
      */
     readPreference?: pulumi.Input<string>;
 }
+export interface ClusterLabel {
+    /**
+     * The key that you want to write.
+     */
+    key?: pulumi.Input<string>;
+    /**
+     * The value that you want to write.
+     */
+    value?: pulumi.Input<string>;
+}
 export interface ClusterReplicationSpec {
     /**
      * Unique identifer of the replication document for a zone in a Global Cluster.
@@ -90,6 +100,16 @@ export interface ClusterReplicationSpecRegionsConfig {
      * Name for the region specified.
      */
     regionName?: pulumi.Input<string>;
+}
+export interface DatabaseUserLabel {
+    /**
+     * The key that you want to write.
+     */
+    key?: pulumi.Input<string>;
+    /**
+     * The value that you want to write.
+     */
+    value?: pulumi.Input<string>;
 }
 export interface DatabaseUserRole {
     /**
@@ -176,17 +196,20 @@ export interface EncryptionAtRestGoogleCloudKms {
      */
     serviceAccountKey: pulumi.Input<string>;
 }
-export interface ProjectIpWhitelistWhitelist {
+export interface ProjectTeam {
     /**
-     * The whitelist entry in Classless Inter-Domain Routing (CIDR) notation. Mutually exclusive with `ipAddress`.
+     * Each string in the array represents a project role you want to assign to the team. Every user associated with the team inherits these roles. You must specify an array even if you are only associating a single role with the team.
+     * The following are valid roles:
+     * * `GROUP_OWNER`
+     * * `GROUP_READ_ONLY`
+     * * `GROUP_DATA_ACCESS_ADMIN`
+     * * `GROUP_DATA_ACCESS_READ_WRITE`
+     * * `GROUP_DATA_ACCESS_READ_ONLY`
+     * * `GROUP_CLUSTER_MANAGER`
      */
-    cidrBlock?: pulumi.Input<string>;
+    roleNames: pulumi.Input<pulumi.Input<string>[]>;
     /**
-     * Comment to add to the whitelist entry.
+     * The unique identifier of the team you want to associate with the project. The team and project must share the same parent organization.
      */
-    comment?: pulumi.Input<string>;
-    /**
-     * The whitelisted IP address. Mutually exclusive with `cidrBlock`.
-     */
-    ipAddress?: pulumi.Input<string>;
+    teamId: pulumi.Input<string>;
 }

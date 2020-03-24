@@ -8,8 +8,6 @@ import (
 	"github.com/pulumi/pulumi/sdk/go/pulumi"
 )
 
-// `.Project` provides a Project resource. This allows project to be created.
-//
 // > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/r/project.html.markdown.
 type Project struct {
 	s *pulumi.ResourceState
@@ -25,9 +23,11 @@ func NewProject(ctx *pulumi.Context,
 	if args == nil {
 		inputs["name"] = nil
 		inputs["orgId"] = nil
+		inputs["teams"] = nil
 	} else {
 		inputs["name"] = args.Name
 		inputs["orgId"] = args.OrgId
+		inputs["teams"] = args.Teams
 	}
 	inputs["clusterCount"] = nil
 	inputs["created"] = nil
@@ -48,6 +48,7 @@ func GetProject(ctx *pulumi.Context,
 		inputs["created"] = state.Created
 		inputs["name"] = state.Name
 		inputs["orgId"] = state.OrgId
+		inputs["teams"] = state.Teams
 	}
 	s, err := ctx.ReadResource("mongodbatlas:index/project:Project", name, id, inputs, opts...)
 	if err != nil {
@@ -76,7 +77,7 @@ func (r *Project) Created() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["created"])
 }
 
-// The name of the project you want to create.
+// The name of the project you want to create. (Cannot be changed via this Provider after creation.)
 func (r *Project) Name() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["name"])
 }
@@ -86,22 +87,28 @@ func (r *Project) OrgId() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["orgId"])
 }
 
+func (r *Project) Teams() pulumi.ArrayOutput {
+	return (pulumi.ArrayOutput)(r.s.State["teams"])
+}
+
 // Input properties used for looking up and filtering Project resources.
 type ProjectState struct {
 	// The number of Atlas clusters deployed in the project..
 	ClusterCount interface{}
 	// The ISO-8601-formatted timestamp of when Atlas created the project..
 	Created interface{}
-	// The name of the project you want to create.
+	// The name of the project you want to create. (Cannot be changed via this Provider after creation.)
 	Name interface{}
 	// The ID of the organization you want to create the project within.
 	OrgId interface{}
+	Teams interface{}
 }
 
 // The set of arguments for constructing a Project resource.
 type ProjectArgs struct {
-	// The name of the project you want to create.
+	// The name of the project you want to create. (Cannot be changed via this Provider after creation.)
 	Name interface{}
 	// The ID of the organization you want to create the project within.
 	OrgId interface{}
+	Teams interface{}
 }

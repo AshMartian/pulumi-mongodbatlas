@@ -13,6 +13,8 @@ import (
 // > **NOTE:** Groups and projects are synonymous terms. You may find groupId in the official documentation.
 // 
 // > **IMPORTANT:**
+// <br> &#8226; Free tier cluster creation (M0) is not supported via API or by this Provider.
+// <br> &#8226; Shared tier clusters (M2, M5) cannot be upgraded to higher tiers via API or by this Provider. 
 // <br> &#8226; Changes to cluster configurations can affect costs. Before making changes, please see [Billing](https://docs.atlas.mongodb.com/billing/).
 // <br> &#8226; If your Atlas project contains a custom role that uses actions introduced in a specific MongoDB version, you cannot create a cluster with a MongoDB version less than that version unless you delete the custom role.
 //
@@ -43,9 +45,11 @@ func NewCluster(ctx *pulumi.Context,
 		inputs["clusterType"] = nil
 		inputs["diskSizeGb"] = nil
 		inputs["encryptionAtRestProvider"] = nil
+		inputs["labels"] = nil
 		inputs["mongoDbMajorVersion"] = nil
 		inputs["name"] = nil
 		inputs["numShards"] = nil
+		inputs["pitEnabled"] = nil
 		inputs["projectId"] = nil
 		inputs["providerBackupEnabled"] = nil
 		inputs["providerDiskIops"] = nil
@@ -66,9 +70,11 @@ func NewCluster(ctx *pulumi.Context,
 		inputs["clusterType"] = args.ClusterType
 		inputs["diskSizeGb"] = args.DiskSizeGb
 		inputs["encryptionAtRestProvider"] = args.EncryptionAtRestProvider
+		inputs["labels"] = args.Labels
 		inputs["mongoDbMajorVersion"] = args.MongoDbMajorVersion
 		inputs["name"] = args.Name
 		inputs["numShards"] = args.NumShards
+		inputs["pitEnabled"] = args.PitEnabled
 		inputs["projectId"] = args.ProjectId
 		inputs["providerBackupEnabled"] = args.ProviderBackupEnabled
 		inputs["providerDiskIops"] = args.ProviderDiskIops
@@ -111,6 +117,7 @@ func GetCluster(ctx *pulumi.Context,
 		inputs["clusterType"] = state.ClusterType
 		inputs["diskSizeGb"] = state.DiskSizeGb
 		inputs["encryptionAtRestProvider"] = state.EncryptionAtRestProvider
+		inputs["labels"] = state.Labels
 		inputs["mongoDbMajorVersion"] = state.MongoDbMajorVersion
 		inputs["mongoDbVersion"] = state.MongoDbVersion
 		inputs["mongoUri"] = state.MongoUri
@@ -119,6 +126,7 @@ func GetCluster(ctx *pulumi.Context,
 		inputs["name"] = state.Name
 		inputs["numShards"] = state.NumShards
 		inputs["paused"] = state.Paused
+		inputs["pitEnabled"] = state.PitEnabled
 		inputs["projectId"] = state.ProjectId
 		inputs["providerBackupEnabled"] = state.ProviderBackupEnabled
 		inputs["providerDiskIops"] = state.ProviderDiskIops
@@ -161,7 +169,7 @@ func (r *Cluster) AutoScalingDiskGbEnabled() pulumi.BoolOutput {
 	return (pulumi.BoolOutput)(r.s.State["autoScalingDiskGbEnabled"])
 }
 
-// Cloud service provider on which the server for a multi-tenant cluster is provisioned.  (Note: When upgrading from a multi-tenant cluster to a dedicated cluster remove this argument.)
+// Cloud service provider on which the server for a multi-tenant cluster is provisioned.
 func (r *Cluster) BackingProviderName() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["backingProviderName"])
 }
@@ -196,7 +204,12 @@ func (r *Cluster) EncryptionAtRestProvider() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["encryptionAtRestProvider"])
 }
 
-// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.4`, `3.6` or `4.0`. You must set this value to `4.0` if `providerInstanceSizeName` is either M2 or M5.
+// Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
+func (r *Cluster) Labels() pulumi.ArrayOutput {
+	return (pulumi.ArrayOutput)(r.s.State["labels"])
+}
+
+// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
 func (r *Cluster) MongoDbMajorVersion() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["mongoDbMajorVersion"])
 }
@@ -236,6 +249,11 @@ func (r *Cluster) Paused() pulumi.BoolOutput {
 	return (pulumi.BoolOutput)(r.s.State["paused"])
 }
 
+// - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
+func (r *Cluster) PitEnabled() pulumi.BoolOutput {
+	return (pulumi.BoolOutput)(r.s.State["pitEnabled"])
+}
+
 // The unique ID for the project to create the database user.
 func (r *Cluster) ProjectId() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["projectId"])
@@ -251,7 +269,7 @@ func (r *Cluster) ProviderDiskIops() pulumi.IntOutput {
 	return (pulumi.IntOutput)(r.s.State["providerDiskIops"])
 }
 
-// Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.
+// Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.  Example disk types and associated storage sizes: PP4 - 32GB, P6 - 64GB, P10 - 128GB, P20 - 512GB, P30 - 1024GB, P40 - 2048GB, P50 - 4095GB.  More information and the most update to date disk types/storage sizes can be located at https://docs.atlas.mongodb.com/reference/api/clusters-create-one/.
 func (r *Cluster) ProviderDiskTypeName() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["providerDiskTypeName"])
 }
@@ -261,7 +279,7 @@ func (r *Cluster) ProviderEncryptEbsVolume() pulumi.BoolOutput {
 	return (pulumi.BoolOutput)(r.s.State["providerEncryptEbsVolume"])
 }
 
-// Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.
+// Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.  
 func (r *Cluster) ProviderInstanceSizeName() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["providerInstanceSizeName"])
 }
@@ -315,7 +333,7 @@ type ClusterState struct {
 	// - Set to `true` to enable disk auto-scaling.
 	// - Set to `false` to disable disk auto-scaling.
 	AutoScalingDiskGbEnabled interface{}
-	// Cloud service provider on which the server for a multi-tenant cluster is provisioned.  (Note: When upgrading from a multi-tenant cluster to a dedicated cluster remove this argument.)
+	// Cloud service provider on which the server for a multi-tenant cluster is provisioned.
 	BackingProviderName interface{}
 	// Set to true to enable Atlas continuous backups for the cluster.
 	BackupEnabled interface{}
@@ -329,7 +347,9 @@ type ClusterState struct {
 	DiskSizeGb interface{}
 	// Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backupEnabled to be false or omitted.
 	EncryptionAtRestProvider interface{}
-	// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.4`, `3.6` or `4.0`. You must set this value to `4.0` if `providerInstanceSizeName` is either M2 or M5.
+	// Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
+	Labels interface{}
+	// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
 	MongoDbMajorVersion interface{}
 	// Version of MongoDB the cluster runs, in `major-version`.`minor-version` format.
 	MongoDbVersion interface{}
@@ -345,17 +365,19 @@ type ClusterState struct {
 	NumShards interface{}
 	// Flag that indicates whether the cluster is paused or not.
 	Paused interface{}
+	// - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
+	PitEnabled interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
 	// Flag indicating if the cluster uses Cloud Provider Snapshots for backups.
 	ProviderBackupEnabled interface{}
 	// The maximum input/output operations per second (IOPS) the system can perform. The possible values depend on the selected providerSettings.instanceSizeName and diskSizeGB.
 	ProviderDiskIops interface{}
-	// Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.
+	// Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.  Example disk types and associated storage sizes: PP4 - 32GB, P6 - 64GB, P10 - 128GB, P20 - 512GB, P30 - 1024GB, P40 - 2048GB, P50 - 4095GB.  More information and the most update to date disk types/storage sizes can be located at https://docs.atlas.mongodb.com/reference/api/clusters-create-one/.
 	ProviderDiskTypeName interface{}
 	// If enabled, the Amazon EBS encryption feature encrypts the server’s root volume for both data at rest within the volume and for data moving between the volume and the instance.
 	ProviderEncryptEbsVolume interface{}
-	// Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.
+	// Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.  
 	ProviderInstanceSizeName interface{}
 	// Cloud service provider on which the servers are provisioned.
 	ProviderName interface{}
@@ -387,7 +409,7 @@ type ClusterArgs struct {
 	// - Set to `true` to enable disk auto-scaling.
 	// - Set to `false` to disable disk auto-scaling.
 	AutoScalingDiskGbEnabled interface{}
-	// Cloud service provider on which the server for a multi-tenant cluster is provisioned.  (Note: When upgrading from a multi-tenant cluster to a dedicated cluster remove this argument.)
+	// Cloud service provider on which the server for a multi-tenant cluster is provisioned.
 	BackingProviderName interface{}
 	// Set to true to enable Atlas continuous backups for the cluster.
 	BackupEnabled interface{}
@@ -399,23 +421,27 @@ type ClusterArgs struct {
 	DiskSizeGb interface{}
 	// Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backupEnabled to be false or omitted.
 	EncryptionAtRestProvider interface{}
-	// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.4`, `3.6` or `4.0`. You must set this value to `4.0` if `providerInstanceSizeName` is either M2 or M5.
+	// Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
+	Labels interface{}
+	// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
 	MongoDbMajorVersion interface{}
 	// Name of the cluster as it appears in Atlas. Once the cluster is created, its name cannot be changed.
 	Name interface{}
 	// Number of shards to deploy in the specified zone.
 	NumShards interface{}
+	// - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
+	PitEnabled interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
 	// Flag indicating if the cluster uses Cloud Provider Snapshots for backups.
 	ProviderBackupEnabled interface{}
 	// The maximum input/output operations per second (IOPS) the system can perform. The possible values depend on the selected providerSettings.instanceSizeName and diskSizeGB.
 	ProviderDiskIops interface{}
-	// Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.
+	// Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.  Example disk types and associated storage sizes: PP4 - 32GB, P6 - 64GB, P10 - 128GB, P20 - 512GB, P30 - 1024GB, P40 - 2048GB, P50 - 4095GB.  More information and the most update to date disk types/storage sizes can be located at https://docs.atlas.mongodb.com/reference/api/clusters-create-one/.
 	ProviderDiskTypeName interface{}
 	// If enabled, the Amazon EBS encryption feature encrypts the server’s root volume for both data at rest within the volume and for data moving between the volume and the instance.
 	ProviderEncryptEbsVolume interface{}
-	// Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.
+	// Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.  
 	ProviderInstanceSizeName interface{}
 	// Cloud service provider on which the servers are provisioned.
 	ProviderName interface{}

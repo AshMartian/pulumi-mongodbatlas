@@ -16,12 +16,20 @@ export interface GetNetworkContainersArgs {
      * The unique ID for the project to create the database user.
      */
     readonly projectId: string;
+    /**
+     * Cloud provider for this Network peering container. Accepted values are AWS, GCP, and Azure.
+     */
+    readonly providerName: string;
 }
 /**
  * A collection of values returned by getNetworkContainers.
  */
 export interface GetNetworkContainersResult {
     readonly projectId: string;
+    /**
+     * Cloud provider for this Network Peering connection. If omitted, Atlas sets this parameter to AWS.
+     */
+    readonly providerName: string;
     /**
      * A list where each represents a Network Peering Container.
      */

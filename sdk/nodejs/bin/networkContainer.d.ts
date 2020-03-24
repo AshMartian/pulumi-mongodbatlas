@@ -4,10 +4,28 @@ import * as pulumi from "@pulumi/pulumi";
  *
  * > **IMPORTANT:** This resource creates one Network Peering container into which Atlas can deploy Network Peering connections. An Atlas project can have a maximum of one container for each cloud provider. You must have either the Project Owner or Organization Owner role to successfully call this endpoint.
  *
+ * The following table outlines the maximum number of Network Peering containers per cloud provider:
+ * * Cloud Provider:  GCP - Container Limit: One container per project.
+ * * Cloud Provider:  AWS and Azure - Container Limit: One container per cloud provider region.
+ *
  * > **NOTE:** Groups and projects are synonymous terms. You may find **group_id** in the official documentation.
  *
  *
  * ## Example Usage
+ *
+ * ### Example with AWS.
+ *
+ * ```typescript
+ * import * as pulumi from "@pulumi/pulumi";
+ * import * as mongodbatlas from "@pulumi/mongodbatlas";
+ *
+ * const test = new mongodbatlas.NetworkContainer("test", {
+ *     atlasCidrBlock: "10.8.0.0/21",
+ *     projectId: "<YOUR-PROJECT-ID>",
+ *     providerName: "AWS",
+ *     regionName: "US_EAST_1",
+ * });
+ * ```
  *
  * ### Example with GCP
  *

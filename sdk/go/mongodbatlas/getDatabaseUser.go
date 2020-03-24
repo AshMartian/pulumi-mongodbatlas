@@ -17,6 +17,8 @@ import (
 func LookupDatabaseUser(ctx *pulumi.Context, args *GetDatabaseUserArgs) (*GetDatabaseUserResult, error) {
 	inputs := make(map[string]interface{})
 	if args != nil {
+		inputs["authDatabaseName"] = args.AuthDatabaseName
+		inputs["databaseName"] = args.DatabaseName
 		inputs["projectId"] = args.ProjectId
 		inputs["username"] = args.Username
 	}
@@ -25,16 +27,22 @@ func LookupDatabaseUser(ctx *pulumi.Context, args *GetDatabaseUserArgs) (*GetDat
 		return nil, err
 	}
 	return &GetDatabaseUserResult{
+		AuthDatabaseName: outputs["authDatabaseName"],
 		DatabaseName: outputs["databaseName"],
+		Labels: outputs["labels"],
 		ProjectId: outputs["projectId"],
 		Roles: outputs["roles"],
 		Username: outputs["username"],
+		X509Type: outputs["x509Type"],
 		Id: outputs["id"],
 	}, nil
 }
 
 // A collection of arguments for invoking getDatabaseUser.
 type GetDatabaseUserArgs struct {
+	// The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is almost always the admin database, for X509 it is $external.
+	AuthDatabaseName interface{}
+	DatabaseName interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
 	// Username for authenticating to MongoDB.
@@ -43,12 +51,16 @@ type GetDatabaseUserArgs struct {
 
 // A collection of values returned by getDatabaseUser.
 type GetDatabaseUserResult struct {
+	AuthDatabaseName interface{}
 	// Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
 	DatabaseName interface{}
+	Labels interface{}
 	ProjectId interface{}
 	// List of user’s roles and the databases / collections on which the roles apply. A role allows the user to perform particular actions on the specified database. A role on the admin database can include privileges that apply to the other databases as well. See Roles below for more details.
 	Roles interface{}
 	Username interface{}
+	// X.509 method by which the provided username is authenticated.
+	X509Type interface{}
 	// id is the provider-assigned unique ID for this managed resource.
 	Id interface{}
 }

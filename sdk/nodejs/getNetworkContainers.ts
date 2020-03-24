@@ -23,6 +23,7 @@ export function getNetworkContainers(args: GetNetworkContainersArgs, opts?: pulu
     }
     const promise: Promise<GetNetworkContainersResult> = pulumi.runtime.invoke("mongodbatlas:index/getNetworkContainers:getNetworkContainers", {
         "projectId": args.projectId,
+        "providerName": args.providerName,
     }, opts);
 
     return pulumi.utils.liftProperties(promise, opts);
@@ -36,6 +37,10 @@ export interface GetNetworkContainersArgs {
      * The unique ID for the project to create the database user.
      */
     readonly projectId: string;
+    /**
+     * Cloud provider for this Network peering container. Accepted values are AWS, GCP, and Azure.
+     */
+    readonly providerName: string;
 }
 
 /**
@@ -43,6 +48,10 @@ export interface GetNetworkContainersArgs {
  */
 export interface GetNetworkContainersResult {
     readonly projectId: string;
+    /**
+     * Cloud provider for this Network Peering connection. If omitted, Atlas sets this parameter to AWS.
+     */
+    readonly providerName: string;
     /**
      * A list where each represents a Network Peering Container.
      */

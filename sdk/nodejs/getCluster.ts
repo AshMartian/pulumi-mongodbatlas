@@ -72,13 +72,14 @@ export interface GetClusterResult {
      */
     readonly clusterType: string;
     /**
-     * Indicates the size in gigabytes of the server’s root volume.
+     * Indicates the size in gigabytes of the server’s root volume (AWS/GCP Only).
      */
     readonly diskSizeGb: number;
     /**
      * Indicates whether Encryption at Rest is enabled or disabled.
      */
     readonly encryptionAtRestProvider: string;
+    readonly labels: outputs.GetClusterLabel[];
     /**
      * Indicates the version of the cluster to deploy.
      */
@@ -100,7 +101,7 @@ export interface GetClusterResult {
      */
     readonly mongoUriWithOptions: string;
     /**
-     * Name of the cluster as it appears in Atlas.
+     * The name of the current plugin
      */
     readonly name: string;
     /**
@@ -111,6 +112,10 @@ export interface GetClusterResult {
      * Flag that indicates whether the cluster is paused or not.
      */
     readonly paused: boolean;
+    /**
+     * Flag that indicates if the cluster uses Point-in-Time backups.
+     */
+    readonly pitEnabled: boolean;
     readonly projectId: string;
     /**
      * Flag indicating if the cluster uses Cloud Provider Snapshots for backups.
@@ -121,7 +126,7 @@ export interface GetClusterResult {
      */
     readonly providerDiskIops: number;
     /**
-     * Describes Azure disk type of the server’s root volume.
+     * Describes Azure disk type of the server’s root volume (Azure Only).
      */
     readonly providerDiskTypeName: string;
     /**

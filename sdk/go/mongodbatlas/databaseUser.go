@@ -16,9 +16,6 @@ type DatabaseUser struct {
 // NewDatabaseUser registers a new resource with the given unique name, arguments, and options.
 func NewDatabaseUser(ctx *pulumi.Context,
 	name string, args *DatabaseUserArgs, opts ...pulumi.ResourceOpt) (*DatabaseUser, error) {
-	if args == nil || args.DatabaseName == nil {
-		return nil, errors.New("missing required argument 'DatabaseName'")
-	}
 	if args == nil || args.ProjectId == nil {
 		return nil, errors.New("missing required argument 'ProjectId'")
 	}
@@ -27,17 +24,23 @@ func NewDatabaseUser(ctx *pulumi.Context,
 	}
 	inputs := make(map[string]interface{})
 	if args == nil {
+		inputs["authDatabaseName"] = nil
 		inputs["databaseName"] = nil
+		inputs["labels"] = nil
 		inputs["password"] = nil
 		inputs["projectId"] = nil
 		inputs["roles"] = nil
 		inputs["username"] = nil
+		inputs["x509Type"] = nil
 	} else {
+		inputs["authDatabaseName"] = args.AuthDatabaseName
 		inputs["databaseName"] = args.DatabaseName
+		inputs["labels"] = args.Labels
 		inputs["password"] = args.Password
 		inputs["projectId"] = args.ProjectId
 		inputs["roles"] = args.Roles
 		inputs["username"] = args.Username
+		inputs["x509Type"] = args.X509Type
 	}
 	s, err := ctx.RegisterResource("mongodbatlas:index/databaseUser:DatabaseUser", name, true, inputs, opts...)
 	if err != nil {
@@ -52,11 +55,14 @@ func GetDatabaseUser(ctx *pulumi.Context,
 	name string, id pulumi.ID, state *DatabaseUserState, opts ...pulumi.ResourceOpt) (*DatabaseUser, error) {
 	inputs := make(map[string]interface{})
 	if state != nil {
+		inputs["authDatabaseName"] = state.AuthDatabaseName
 		inputs["databaseName"] = state.DatabaseName
+		inputs["labels"] = state.Labels
 		inputs["password"] = state.Password
 		inputs["projectId"] = state.ProjectId
 		inputs["roles"] = state.Roles
 		inputs["username"] = state.Username
+		inputs["x509Type"] = state.X509Type
 	}
 	s, err := ctx.ReadResource("mongodbatlas:index/databaseUser:DatabaseUser", name, id, inputs, opts...)
 	if err != nil {
@@ -75,12 +81,20 @@ func (r *DatabaseUser) ID() pulumi.IDOutput {
 	return r.s.ID()
 }
 
+// The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is always the admin database.
+func (r *DatabaseUser) AuthDatabaseName() pulumi.StringOutput {
+	return (pulumi.StringOutput)(r.s.State["authDatabaseName"])
+}
+
 // Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
 func (r *DatabaseUser) DatabaseName() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["databaseName"])
 }
 
-// User's initial password. This is required to create the user but may be removed after. Password may show up in logs, and it will be stored in the state file as plain-text. Password can be changed in the web interface to increase security.
+func (r *DatabaseUser) Labels() pulumi.ArrayOutput {
+	return (pulumi.ArrayOutput)(r.s.State["labels"])
+}
+
 func (r *DatabaseUser) Password() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["password"])
 }
@@ -100,11 +114,18 @@ func (r *DatabaseUser) Username() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["username"])
 }
 
+// X.509 method by which the provided username is authenticated. If no value is given, Atlas uses the default value of NONE. The accepted types are:
+func (r *DatabaseUser) X509Type() pulumi.StringOutput {
+	return (pulumi.StringOutput)(r.s.State["x509Type"])
+}
+
 // Input properties used for looking up and filtering DatabaseUser resources.
 type DatabaseUserState struct {
+	// The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is always the admin database.
+	AuthDatabaseName interface{}
 	// Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
 	DatabaseName interface{}
-	// User's initial password. This is required to create the user but may be removed after. Password may show up in logs, and it will be stored in the state file as plain-text. Password can be changed in the web interface to increase security.
+	Labels interface{}
 	Password interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
@@ -112,13 +133,17 @@ type DatabaseUserState struct {
 	Roles interface{}
 	// Username for authenticating to MongoDB.
 	Username interface{}
+	// X.509 method by which the provided username is authenticated. If no value is given, Atlas uses the default value of NONE. The accepted types are:
+	X509Type interface{}
 }
 
 // The set of arguments for constructing a DatabaseUser resource.
 type DatabaseUserArgs struct {
+	// The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is always the admin database.
+	AuthDatabaseName interface{}
 	// Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
 	DatabaseName interface{}
-	// User's initial password. This is required to create the user but may be removed after. Password may show up in logs, and it will be stored in the state file as plain-text. Password can be changed in the web interface to increase security.
+	Labels interface{}
 	Password interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
@@ -126,4 +151,6 @@ type DatabaseUserArgs struct {
 	Roles interface{}
 	// Username for authenticating to MongoDB.
 	Username interface{}
+	// X.509 method by which the provided username is authenticated. If no value is given, Atlas uses the default value of NONE. The accepted types are:
+	X509Type interface{}
 }

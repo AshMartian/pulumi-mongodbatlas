@@ -5,10 +5,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
 /**
- * `mongodbatlas..NetworkPeering` provides a Network Peering Connection resource. The resource lets you create, edit and delete network peering connections. The resource requires your Project ID.
- *
+ * `mongodbatlas..NetworkPeering` provides a Network Peering Connection resource. The resource lets you create, edit and delete network peering connections. The resource requires your Project ID.  Ensure you have first created a Network Container.  See the networkContainer resource and examples below.
  *
  * > **GCP AND AZURE ONLY:** You must enable Connect via Peering Only mode to use network peering.
+ *
+ * > **AZURE ONLY:** To create the peering request with an Azure VNET, you must grant Atlas the following permissions on the virtual network.
+ *     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/read
+ *     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/write
+ *     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/delete
+ *     Microsoft.Network/virtualNetworks/peer/action
+ * For more information see https://docs.atlas.mongodb.com/security-vpc-peering/
+ *
+ * > **Create a Whitelist:** Ensure you whitelist the private IP ranges of the subnets in which your application is hosted in order to connect to your Atlas cluster.  See the projectIpWhitelist resource.
  *
  * > **NOTE:** Groups and projects are synonymous terms. You may find **group_id** in the official documentation.
  *
@@ -51,6 +59,9 @@ class NetworkPeering extends pulumi.CustomResource {
             }
             if (!args || args.projectId === undefined) {
                 throw new Error("Missing required property 'projectId'");
+            }
+            if (!args || args.providerName === undefined) {
+                throw new Error("Missing required property 'providerName'");
             }
             inputs["accepterRegionName"] = args ? args.accepterRegionName : undefined;
             inputs["atlasCidrBlock"] = args ? args.atlasCidrBlock : undefined;

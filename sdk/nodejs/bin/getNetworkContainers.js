@@ -20,6 +20,7 @@ function getNetworkContainers(args, opts) {
     }
     const promise = pulumi.runtime.invoke("mongodbatlas:index/getNetworkContainers:getNetworkContainers", {
         "projectId": args.projectId,
+        "providerName": args.providerName,
     }, opts);
     return pulumi.utils.liftProperties(promise, opts);
 }

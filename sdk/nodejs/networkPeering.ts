@@ -7,10 +7,18 @@ import * as outputs from "./types/output";
 import * as utilities from "./utilities";
 
 /**
- * `mongodbatlas..NetworkPeering` provides a Network Peering Connection resource. The resource lets you create, edit and delete network peering connections. The resource requires your Project ID.
- * 
+ * `mongodbatlas..NetworkPeering` provides a Network Peering Connection resource. The resource lets you create, edit and delete network peering connections. The resource requires your Project ID.  Ensure you have first created a Network Container.  See the networkContainer resource and examples below.
  * 
  * > **GCP AND AZURE ONLY:** You must enable Connect via Peering Only mode to use network peering.
+ * 
+ * > **AZURE ONLY:** To create the peering request with an Azure VNET, you must grant Atlas the following permissions on the virtual network.
+ *     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/read
+ *     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/write
+ *     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/delete
+ *     Microsoft.Network/virtualNetworks/peer/action
+ * For more information see https://docs.atlas.mongodb.com/security-vpc-peering/
+ * 
+ * > **Create a Whitelist:** Ensure you whitelist the private IP ranges of the subnets in which your application is hosted in order to connect to your Atlas cluster.  See the projectIpWhitelist resource.
  * 
  * > **NOTE:** Groups and projects are synonymous terms. You may find **group_id** in the official documentation.
  *
@@ -93,7 +101,7 @@ export class NetworkPeering extends pulumi.CustomResource {
      */
     public /*out*/ readonly errorStateName!: pulumi.Output<string>;
     /**
-     * GCP project ID of the owner of the network peer. 
+     * GCP project ID of the owner of the network peer.
      */
     public readonly gcpProjectId!: pulumi.Output<string>;
     /**
@@ -109,11 +117,11 @@ export class NetworkPeering extends pulumi.CustomResource {
      */
     public readonly projectId!: pulumi.Output<string>;
     /**
-     * Cloud provider for this VPC peering connection. If omitted, Atlas sets this parameter to AWS. (Possible Values `AWS`, `AZURE`, `GCP`).
+     * Cloud provider for this VPC peering connection. (Possible Values `AWS`, `AZURE`, `GCP`).
      */
-    public readonly providerName!: pulumi.Output<string | undefined>;
+    public readonly providerName!: pulumi.Output<string>;
     /**
-     * Name of your Azure resource group. 
+     * Name of your Azure resource group.
      */
     public readonly resourceGroupName!: pulumi.Output<string>;
     /**
@@ -180,6 +188,9 @@ export class NetworkPeering extends pulumi.CustomResource {
             }
             if (!args || args.projectId === undefined) {
                 throw new Error("Missing required property 'projectId'");
+            }
+            if (!args || args.providerName === undefined) {
+                throw new Error("Missing required property 'providerName'");
             }
             inputs["accepterRegionName"] = args ? args.accepterRegionName : undefined;
             inputs["atlasCidrBlock"] = args ? args.atlasCidrBlock : undefined;
@@ -271,7 +282,7 @@ export interface NetworkPeeringState {
      */
     readonly errorStateName?: pulumi.Input<string>;
     /**
-     * GCP project ID of the owner of the network peer. 
+     * GCP project ID of the owner of the network peer.
      */
     readonly gcpProjectId?: pulumi.Input<string>;
     /**
@@ -287,11 +298,11 @@ export interface NetworkPeeringState {
      */
     readonly projectId?: pulumi.Input<string>;
     /**
-     * Cloud provider for this VPC peering connection. If omitted, Atlas sets this parameter to AWS. (Possible Values `AWS`, `AZURE`, `GCP`).
+     * Cloud provider for this VPC peering connection. (Possible Values `AWS`, `AZURE`, `GCP`).
      */
     readonly providerName?: pulumi.Input<string>;
     /**
-     * Name of your Azure resource group. 
+     * Name of your Azure resource group.
      */
     readonly resourceGroupName?: pulumi.Input<string>;
     /**
@@ -353,7 +364,7 @@ export interface NetworkPeeringArgs {
      */
     readonly containerId: pulumi.Input<string>;
     /**
-     * GCP project ID of the owner of the network peer. 
+     * GCP project ID of the owner of the network peer.
      */
     readonly gcpProjectId?: pulumi.Input<string>;
     /**
@@ -365,11 +376,11 @@ export interface NetworkPeeringArgs {
      */
     readonly projectId: pulumi.Input<string>;
     /**
-     * Cloud provider for this VPC peering connection. If omitted, Atlas sets this parameter to AWS. (Possible Values `AWS`, `AZURE`, `GCP`).
+     * Cloud provider for this VPC peering connection. (Possible Values `AWS`, `AZURE`, `GCP`).
      */
-    readonly providerName?: pulumi.Input<string>;
+    readonly providerName: pulumi.Input<string>;
     /**
-     * Name of your Azure resource group. 
+     * Name of your Azure resource group.
      */
     readonly resourceGroupName?: pulumi.Input<string>;
     /**

@@ -34,6 +34,7 @@ func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult
 		ClusterType: outputs["clusterType"],
 		DiskSizeGb: outputs["diskSizeGb"],
 		EncryptionAtRestProvider: outputs["encryptionAtRestProvider"],
+		Labels: outputs["labels"],
 		MongoDbMajorVersion: outputs["mongoDbMajorVersion"],
 		MongoDbVersion: outputs["mongoDbVersion"],
 		MongoUri: outputs["mongoUri"],
@@ -42,6 +43,7 @@ func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult
 		Name: outputs["name"],
 		NumShards: outputs["numShards"],
 		Paused: outputs["paused"],
+		PitEnabled: outputs["pitEnabled"],
 		ProjectId: outputs["projectId"],
 		ProviderBackupEnabled: outputs["providerBackupEnabled"],
 		ProviderDiskIops: outputs["providerDiskIops"],
@@ -79,10 +81,11 @@ type GetClusterResult struct {
 	BiConnector interface{}
 	// Indicates the type of the cluster that you want to modify. You cannot convert a sharded cluster deployment to a replica set deployment.
 	ClusterType interface{}
-	// Indicates the size in gigabytes of the server’s root volume.
+	// Indicates the size in gigabytes of the server’s root volume (AWS/GCP Only).
 	DiskSizeGb interface{}
 	// Indicates whether Encryption at Rest is enabled or disabled.
 	EncryptionAtRestProvider interface{}
+	Labels interface{}
 	// Indicates the version of the cluster to deploy.
 	MongoDbMajorVersion interface{}
 	// Version of MongoDB the cluster runs, in `major-version`.`minor-version` format.
@@ -93,18 +96,20 @@ type GetClusterResult struct {
 	MongoUriUpdated interface{}
 	// Describes connection string for connecting to the Atlas cluster. Includes the replicaSet, ssl, and authSource query parameters in the connection string with values appropriate for the cluster.
 	MongoUriWithOptions interface{}
-	// Name of the cluster as it appears in Atlas.
+	// The name of the current plugin
 	Name interface{}
 	// Number of shards to deploy in the specified zone.
 	NumShards interface{}
 	// Flag that indicates whether the cluster is paused or not.
 	Paused interface{}
+	// Flag that indicates if the cluster uses Point-in-Time backups.
+	PitEnabled interface{}
 	ProjectId interface{}
 	// Flag indicating if the cluster uses Cloud Provider Snapshots for backups.
 	ProviderBackupEnabled interface{}
 	// Indicates the maximum input/output operations per second (IOPS) the system can perform. The possible values depend on the selected providerSettings.instanceSizeName and diskSizeGB.
 	ProviderDiskIops interface{}
-	// Describes Azure disk type of the server’s root volume.
+	// Describes Azure disk type of the server’s root volume (Azure Only).
 	ProviderDiskTypeName interface{}
 	// Indicates whether the Amazon EBS encryption is enabled. This feature encrypts the server’s root volume for both data at rest within the volume and data moving between the volume and the instance.
 	ProviderEncryptEbsVolume interface{}

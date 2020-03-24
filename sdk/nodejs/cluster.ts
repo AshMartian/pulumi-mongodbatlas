@@ -12,6 +12,8 @@ import * as utilities from "./utilities";
  * > **NOTE:** Groups and projects are synonymous terms. You may find groupId in the official documentation.
  * 
  * > **IMPORTANT:**
+ * <br> &#8226; Free tier cluster creation (M0) is not supported via API or by this Provider.
+ * <br> &#8226; Shared tier clusters (M2, M5) cannot be upgraded to higher tiers via API or by this Provider. 
  * <br> &#8226; Changes to cluster configurations can affect costs. Before making changes, please see [Billing](https://docs.atlas.mongodb.com/billing/).
  * <br> &#8226; If your Atlas project contains a custom role that uses actions introduced in a specific MongoDB version, you cannot create a cluster with a MongoDB version less than that version unless you delete the custom role.
  * 
@@ -25,11 +27,11 @@ import * as utilities from "./utilities";
  * 
  * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
  *     autoScalingDiskGbEnabled: true,
- *     backupEnabled: true,
  *     diskSizeGb: 100,
  *     mongoDbMajorVersion: "4.0",
  *     numShards: 1,
  *     projectId: "<YOUR-PROJECT-ID>",
+ *     providerBackupEnabled: true,
  *     providerDiskIops: 300,
  *     providerEncryptEbsVolume: true,
  *     providerInstanceSizeName: "M40",
@@ -90,11 +92,11 @@ import * as utilities from "./utilities";
  * import * as mongodbatlas from "@pulumi/mongodbatlas";
  * 
  * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
- *     backupEnabled: true,
  *     clusterType: "REPLICASET",
  *     diskSizeGb: 100,
  *     numShards: 1,
  *     projectId: "<YOUR-PROJECT-ID>",
+ *     providerBackupEnabled: true,
  *     providerDiskIops: 300,
  *     providerInstanceSizeName: "M10",
  *     //Provider Settings "block"
@@ -133,7 +135,6 @@ import * as utilities from "./utilities";
  * import * as mongodbatlas from "@pulumi/mongodbatlas";
  * 
  * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
- *     backupEnabled: false,
  *     clusterType: "GEOSHARDED",
  *     diskSizeGb: 80,
  *     numShards: 1,
@@ -166,6 +167,24 @@ import * as utilities from "./utilities";
  *             zoneName: "Zone 2",
  *         },
  *     ],
+ * });
+ * ```
+ * ### Example AWS Shared Tier cluster
+ * ```typescript
+ * import * as pulumi from "@pulumi/pulumi";
+ * import * as mongodbatlas from "@pulumi/mongodbatlas";
+ * 
+ * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
+ *     autoScalingDiskGbEnabled: false,
+ *     backingProviderName: "AWS",
+ *     diskSizeGb: 2,
+ *     //These must be the following values
+ *     mongoDbMajorVersion: "4.2",
+ *     projectId: "<YOUR-PROJECT-ID>",
+ *     providerInstanceSizeName: "M2",
+ *     //Provider Settings "block"
+ *     providerName: "TENANT",
+ *     providerRegionName: "US_EAST_1",
  * });
  * ```
  *
@@ -204,9 +223,9 @@ export class Cluster extends pulumi.CustomResource {
      * - Set to `true` to enable disk auto-scaling.
      * - Set to `false` to disable disk auto-scaling.
      */
-    public readonly autoScalingDiskGbEnabled!: pulumi.Output<boolean | undefined>;
+    public readonly autoScalingDiskGbEnabled!: pulumi.Output<boolean>;
     /**
-     * Cloud service provider on which the server for a multi-tenant cluster is provisioned.  (Note: When upgrading from a multi-tenant cluster to a dedicated cluster remove this argument.)
+     * Cloud service provider on which the server for a multi-tenant cluster is provisioned.
      */
     public readonly backingProviderName!: pulumi.Output<string>;
     /**
@@ -234,7 +253,11 @@ export class Cluster extends pulumi.CustomResource {
      */
     public readonly encryptionAtRestProvider!: pulumi.Output<string>;
     /**
-     * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.4`, `3.6` or `4.0`. You must set this value to `4.0` if `providerInstanceSizeName` is either M2 or M5.
+     * Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
+     */
+    public readonly labels!: pulumi.Output<outputs.ClusterLabel[]>;
+    /**
+     * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
      */
     public readonly mongoDbMajorVersion!: pulumi.Output<string>;
     /**
@@ -266,6 +289,10 @@ export class Cluster extends pulumi.CustomResource {
      */
     public /*out*/ readonly paused!: pulumi.Output<boolean>;
     /**
+     * - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
+     */
+    public readonly pitEnabled!: pulumi.Output<boolean>;
+    /**
      * The unique ID for the project to create the database user.
      */
     public readonly projectId!: pulumi.Output<string>;
@@ -278,7 +305,7 @@ export class Cluster extends pulumi.CustomResource {
      */
     public readonly providerDiskIops!: pulumi.Output<number>;
     /**
-     * Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.
+     * Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.  Example disk types and associated storage sizes: PP4 - 32GB, P6 - 64GB, P10 - 128GB, P20 - 512GB, P30 - 1024GB, P40 - 2048GB, P50 - 4095GB.  More information and the most update to date disk types/storage sizes can be located at https://docs.atlas.mongodb.com/reference/api/clusters-create-one/.
      */
     public readonly providerDiskTypeName!: pulumi.Output<string>;
     /**
@@ -286,7 +313,7 @@ export class Cluster extends pulumi.CustomResource {
      */
     public readonly providerEncryptEbsVolume!: pulumi.Output<boolean>;
     /**
-     * Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.
+     * Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.  
      */
     public readonly providerInstanceSizeName!: pulumi.Output<string>;
     /**
@@ -346,6 +373,7 @@ export class Cluster extends pulumi.CustomResource {
             inputs["clusterType"] = state ? state.clusterType : undefined;
             inputs["diskSizeGb"] = state ? state.diskSizeGb : undefined;
             inputs["encryptionAtRestProvider"] = state ? state.encryptionAtRestProvider : undefined;
+            inputs["labels"] = state ? state.labels : undefined;
             inputs["mongoDbMajorVersion"] = state ? state.mongoDbMajorVersion : undefined;
             inputs["mongoDbVersion"] = state ? state.mongoDbVersion : undefined;
             inputs["mongoUri"] = state ? state.mongoUri : undefined;
@@ -354,6 +382,7 @@ export class Cluster extends pulumi.CustomResource {
             inputs["name"] = state ? state.name : undefined;
             inputs["numShards"] = state ? state.numShards : undefined;
             inputs["paused"] = state ? state.paused : undefined;
+            inputs["pitEnabled"] = state ? state.pitEnabled : undefined;
             inputs["projectId"] = state ? state.projectId : undefined;
             inputs["providerBackupEnabled"] = state ? state.providerBackupEnabled : undefined;
             inputs["providerDiskIops"] = state ? state.providerDiskIops : undefined;
@@ -386,9 +415,11 @@ export class Cluster extends pulumi.CustomResource {
             inputs["clusterType"] = args ? args.clusterType : undefined;
             inputs["diskSizeGb"] = args ? args.diskSizeGb : undefined;
             inputs["encryptionAtRestProvider"] = args ? args.encryptionAtRestProvider : undefined;
+            inputs["labels"] = args ? args.labels : undefined;
             inputs["mongoDbMajorVersion"] = args ? args.mongoDbMajorVersion : undefined;
             inputs["name"] = args ? args.name : undefined;
             inputs["numShards"] = args ? args.numShards : undefined;
+            inputs["pitEnabled"] = args ? args.pitEnabled : undefined;
             inputs["projectId"] = args ? args.projectId : undefined;
             inputs["providerBackupEnabled"] = args ? args.providerBackupEnabled : undefined;
             inputs["providerDiskIops"] = args ? args.providerDiskIops : undefined;
@@ -432,7 +463,7 @@ export interface ClusterState {
      */
     readonly autoScalingDiskGbEnabled?: pulumi.Input<boolean>;
     /**
-     * Cloud service provider on which the server for a multi-tenant cluster is provisioned.  (Note: When upgrading from a multi-tenant cluster to a dedicated cluster remove this argument.)
+     * Cloud service provider on which the server for a multi-tenant cluster is provisioned.
      */
     readonly backingProviderName?: pulumi.Input<string>;
     /**
@@ -460,7 +491,11 @@ export interface ClusterState {
      */
     readonly encryptionAtRestProvider?: pulumi.Input<string>;
     /**
-     * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.4`, `3.6` or `4.0`. You must set this value to `4.0` if `providerInstanceSizeName` is either M2 or M5.
+     * Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
+     */
+    readonly labels?: pulumi.Input<pulumi.Input<inputs.ClusterLabel>[]>;
+    /**
+     * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
      */
     readonly mongoDbMajorVersion?: pulumi.Input<string>;
     /**
@@ -492,6 +527,10 @@ export interface ClusterState {
      */
     readonly paused?: pulumi.Input<boolean>;
     /**
+     * - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
+     */
+    readonly pitEnabled?: pulumi.Input<boolean>;
+    /**
      * The unique ID for the project to create the database user.
      */
     readonly projectId?: pulumi.Input<string>;
@@ -504,7 +543,7 @@ export interface ClusterState {
      */
     readonly providerDiskIops?: pulumi.Input<number>;
     /**
-     * Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.
+     * Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.  Example disk types and associated storage sizes: PP4 - 32GB, P6 - 64GB, P10 - 128GB, P20 - 512GB, P30 - 1024GB, P40 - 2048GB, P50 - 4095GB.  More information and the most update to date disk types/storage sizes can be located at https://docs.atlas.mongodb.com/reference/api/clusters-create-one/.
      */
     readonly providerDiskTypeName?: pulumi.Input<string>;
     /**
@@ -512,7 +551,7 @@ export interface ClusterState {
      */
     readonly providerEncryptEbsVolume?: pulumi.Input<boolean>;
     /**
-     * Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.
+     * Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.  
      */
     readonly providerInstanceSizeName?: pulumi.Input<string>;
     /**
@@ -564,7 +603,7 @@ export interface ClusterArgs {
      */
     readonly autoScalingDiskGbEnabled?: pulumi.Input<boolean>;
     /**
-     * Cloud service provider on which the server for a multi-tenant cluster is provisioned.  (Note: When upgrading from a multi-tenant cluster to a dedicated cluster remove this argument.)
+     * Cloud service provider on which the server for a multi-tenant cluster is provisioned.
      */
     readonly backingProviderName?: pulumi.Input<string>;
     /**
@@ -588,7 +627,11 @@ export interface ClusterArgs {
      */
     readonly encryptionAtRestProvider?: pulumi.Input<string>;
     /**
-     * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.4`, `3.6` or `4.0`. You must set this value to `4.0` if `providerInstanceSizeName` is either M2 or M5.
+     * Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
+     */
+    readonly labels?: pulumi.Input<pulumi.Input<inputs.ClusterLabel>[]>;
+    /**
+     * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
      */
     readonly mongoDbMajorVersion?: pulumi.Input<string>;
     /**
@@ -599,6 +642,10 @@ export interface ClusterArgs {
      * Number of shards to deploy in the specified zone.
      */
     readonly numShards?: pulumi.Input<number>;
+    /**
+     * - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
+     */
+    readonly pitEnabled?: pulumi.Input<boolean>;
     /**
      * The unique ID for the project to create the database user.
      */
@@ -612,7 +659,7 @@ export interface ClusterArgs {
      */
     readonly providerDiskIops?: pulumi.Input<number>;
     /**
-     * Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.
+     * Azure disk type of the server’s root volume. If omitted, Atlas uses the default disk type for the selected providerSettings.instanceSizeName.  Example disk types and associated storage sizes: PP4 - 32GB, P6 - 64GB, P10 - 128GB, P20 - 512GB, P30 - 1024GB, P40 - 2048GB, P50 - 4095GB.  More information and the most update to date disk types/storage sizes can be located at https://docs.atlas.mongodb.com/reference/api/clusters-create-one/.
      */
     readonly providerDiskTypeName?: pulumi.Input<string>;
     /**
@@ -620,7 +667,7 @@ export interface ClusterArgs {
      */
     readonly providerEncryptEbsVolume?: pulumi.Input<boolean>;
     /**
-     * Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.
+     * Atlas provides different instance sizes, each with a default storage capacity and RAM size. The instance size you select is used for all the data-bearing servers in your cluster. See [Create a Cluster](https://docs.atlas.mongodb.com/reference/api/clusters-create-one/) `providerSettings.instanceSizeName` for valid values and default resources.  
      */
     readonly providerInstanceSizeName: pulumi.Input<string>;
     /**

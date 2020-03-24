@@ -13,13 +13,19 @@ class GetDatabaseUserResult:
     """
     A collection of values returned by getDatabaseUser.
     """
-    def __init__(__self__, database_name=None, project_id=None, roles=None, username=None, id=None):
+    def __init__(__self__, auth_database_name=None, database_name=None, labels=None, project_id=None, roles=None, username=None, x509_type=None, id=None):
+        if auth_database_name and not isinstance(auth_database_name, str):
+            raise TypeError("Expected argument 'auth_database_name' to be a str")
+        __self__.auth_database_name = auth_database_name
         if database_name and not isinstance(database_name, str):
             raise TypeError("Expected argument 'database_name' to be a str")
         __self__.database_name = database_name
         """
         Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
         """
+        if labels and not isinstance(labels, list):
+            raise TypeError("Expected argument 'labels' to be a list")
+        __self__.labels = labels
         if project_id and not isinstance(project_id, str):
             raise TypeError("Expected argument 'project_id' to be a str")
         __self__.project_id = project_id
@@ -32,6 +38,12 @@ class GetDatabaseUserResult:
         if username and not isinstance(username, str):
             raise TypeError("Expected argument 'username' to be a str")
         __self__.username = username
+        if x509_type and not isinstance(x509_type, str):
+            raise TypeError("Expected argument 'x509_type' to be a str")
+        __self__.x509_type = x509_type
+        """
+        X.509 method by which the provided username is authenticated.
+        """
         if id and not isinstance(id, str):
             raise TypeError("Expected argument 'id' to be a str")
         __self__.id = id
@@ -44,13 +56,16 @@ class AwaitableGetDatabaseUserResult(GetDatabaseUserResult):
         if False:
             yield self
         return GetDatabaseUserResult(
+            auth_database_name=self.auth_database_name,
             database_name=self.database_name,
+            labels=self.labels,
             project_id=self.project_id,
             roles=self.roles,
             username=self.username,
+            x509_type=self.x509_type,
             id=self.id)
 
-def get_database_user(project_id=None,username=None,opts=None):
+def get_database_user(auth_database_name=None,database_name=None,project_id=None,username=None,opts=None):
     """
     `.DatabaseUser` describe a Database User. This represents a database user which will be applied to all clusters within the project.
     
@@ -58,6 +73,7 @@ def get_database_user(project_id=None,username=None,opts=None):
     
     > **NOTE:** Groups and projects are synonymous terms. You may find group_id in the official documentation.
     
+    :param str auth_database_name: The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is almost always the admin database, for X509 it is $external.
     :param str project_id: The unique ID for the project to create the database user.
     :param str username: Username for authenticating to MongoDB.
 
@@ -65,6 +81,8 @@ def get_database_user(project_id=None,username=None,opts=None):
     """
     __args__ = dict()
 
+    __args__['authDatabaseName'] = auth_database_name
+    __args__['databaseName'] = database_name
     __args__['projectId'] = project_id
     __args__['username'] = username
     if opts is None:
@@ -74,8 +92,11 @@ def get_database_user(project_id=None,username=None,opts=None):
     __ret__ = pulumi.runtime.invoke('mongodbatlas:index/getDatabaseUser:getDatabaseUser', __args__, opts=opts).value
 
     return AwaitableGetDatabaseUserResult(
+        auth_database_name=__ret__.get('authDatabaseName'),
         database_name=__ret__.get('databaseName'),
+        labels=__ret__.get('labels'),
         project_id=__ret__.get('projectId'),
         roles=__ret__.get('roles'),
         username=__ret__.get('username'),
+        x509_type=__ret__.get('x509Type'),
         id=__ret__.get('id'))

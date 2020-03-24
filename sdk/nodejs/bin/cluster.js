@@ -10,6 +10,8 @@ const utilities = require("./utilities");
  * > **NOTE:** Groups and projects are synonymous terms. You may find groupId in the official documentation.
  *
  * > **IMPORTANT:**
+ * <br> &#8226; Free tier cluster creation (M0) is not supported via API or by this Provider.
+ * <br> &#8226; Shared tier clusters (M2, M5) cannot be upgraded to higher tiers via API or by this Provider.
  * <br> &#8226; Changes to cluster configurations can affect costs. Before making changes, please see [Billing](https://docs.atlas.mongodb.com/billing/).
  * <br> &#8226; If your Atlas project contains a custom role that uses actions introduced in a specific MongoDB version, you cannot create a cluster with a MongoDB version less than that version unless you delete the custom role.
  *
@@ -23,11 +25,11 @@ const utilities = require("./utilities");
  *
  * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
  *     autoScalingDiskGbEnabled: true,
- *     backupEnabled: true,
  *     diskSizeGb: 100,
  *     mongoDbMajorVersion: "4.0",
  *     numShards: 1,
  *     projectId: "<YOUR-PROJECT-ID>",
+ *     providerBackupEnabled: true,
  *     providerDiskIops: 300,
  *     providerEncryptEbsVolume: true,
  *     providerInstanceSizeName: "M40",
@@ -88,11 +90,11 @@ const utilities = require("./utilities");
  * import * as mongodbatlas from "@pulumi/mongodbatlas";
  *
  * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
- *     backupEnabled: true,
  *     clusterType: "REPLICASET",
  *     diskSizeGb: 100,
  *     numShards: 1,
  *     projectId: "<YOUR-PROJECT-ID>",
+ *     providerBackupEnabled: true,
  *     providerDiskIops: 300,
  *     providerInstanceSizeName: "M10",
  *     //Provider Settings "block"
@@ -131,7 +133,6 @@ const utilities = require("./utilities");
  * import * as mongodbatlas from "@pulumi/mongodbatlas";
  *
  * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
- *     backupEnabled: false,
  *     clusterType: "GEOSHARDED",
  *     diskSizeGb: 80,
  *     numShards: 1,
@@ -166,6 +167,24 @@ const utilities = require("./utilities");
  *     ],
  * });
  * ```
+ * ### Example AWS Shared Tier cluster
+ * ```typescript
+ * import * as pulumi from "@pulumi/pulumi";
+ * import * as mongodbatlas from "@pulumi/mongodbatlas";
+ *
+ * const clusterTest = new mongodbatlas.Cluster("cluster-test", {
+ *     autoScalingDiskGbEnabled: false,
+ *     backingProviderName: "AWS",
+ *     diskSizeGb: 2,
+ *     //These must be the following values
+ *     mongoDbMajorVersion: "4.2",
+ *     projectId: "<YOUR-PROJECT-ID>",
+ *     providerInstanceSizeName: "M2",
+ *     //Provider Settings "block"
+ *     providerName: "TENANT",
+ *     providerRegionName: "US_EAST_1",
+ * });
+ * ```
  *
  * > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/r/cluster.html.markdown.
  */
@@ -183,6 +202,7 @@ class Cluster extends pulumi.CustomResource {
             inputs["clusterType"] = state ? state.clusterType : undefined;
             inputs["diskSizeGb"] = state ? state.diskSizeGb : undefined;
             inputs["encryptionAtRestProvider"] = state ? state.encryptionAtRestProvider : undefined;
+            inputs["labels"] = state ? state.labels : undefined;
             inputs["mongoDbMajorVersion"] = state ? state.mongoDbMajorVersion : undefined;
             inputs["mongoDbVersion"] = state ? state.mongoDbVersion : undefined;
             inputs["mongoUri"] = state ? state.mongoUri : undefined;
@@ -191,6 +211,7 @@ class Cluster extends pulumi.CustomResource {
             inputs["name"] = state ? state.name : undefined;
             inputs["numShards"] = state ? state.numShards : undefined;
             inputs["paused"] = state ? state.paused : undefined;
+            inputs["pitEnabled"] = state ? state.pitEnabled : undefined;
             inputs["projectId"] = state ? state.projectId : undefined;
             inputs["providerBackupEnabled"] = state ? state.providerBackupEnabled : undefined;
             inputs["providerDiskIops"] = state ? state.providerDiskIops : undefined;
@@ -224,9 +245,11 @@ class Cluster extends pulumi.CustomResource {
             inputs["clusterType"] = args ? args.clusterType : undefined;
             inputs["diskSizeGb"] = args ? args.diskSizeGb : undefined;
             inputs["encryptionAtRestProvider"] = args ? args.encryptionAtRestProvider : undefined;
+            inputs["labels"] = args ? args.labels : undefined;
             inputs["mongoDbMajorVersion"] = args ? args.mongoDbMajorVersion : undefined;
             inputs["name"] = args ? args.name : undefined;
             inputs["numShards"] = args ? args.numShards : undefined;
+            inputs["pitEnabled"] = args ? args.pitEnabled : undefined;
             inputs["projectId"] = args ? args.projectId : undefined;
             inputs["providerBackupEnabled"] = args ? args.providerBackupEnabled : undefined;
             inputs["providerDiskIops"] = args ? args.providerDiskIops : undefined;

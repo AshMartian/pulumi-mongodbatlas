@@ -6,7 +6,7 @@ ROOT=$(dirname $0)/..
 PUBLISH_GOOS=("linux" "windows" "darwin")
 PUBLISH_GOARCH=("amd64")
 
-echo "Publishing plugin archive to s3://rel.pulumi.com/:"
+echo "Publishing plugin archive, running scripts/publish-plugin.sh:"
 for OS in "${PUBLISH_GOOS[@]}"
 do
     for ARCH in "${PUBLISH_GOARCH[@]}"

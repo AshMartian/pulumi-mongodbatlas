@@ -7,10 +7,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/go/pulumi"
 )
 
+// `.Project` describes a MongoDB Atlas Project. This represents a project that has been created.
+// 
+// > **NOTE:** Groups and projects are synonymous terms. You may find groupId in the official documentation.
+//
+// > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/d/project.html.markdown.
 func LookupProject(ctx *pulumi.Context, args *GetProjectArgs) (*GetProjectResult, error) {
 	inputs := make(map[string]interface{})
 	if args != nil {
 		inputs["name"] = args.Name
+		inputs["projectId"] = args.ProjectId
 	}
 	outputs, err := ctx.Invoke("mongodbatlas:index/getProject:getProject", inputs)
 	if err != nil {
@@ -21,21 +27,41 @@ func LookupProject(ctx *pulumi.Context, args *GetProjectArgs) (*GetProjectResult
 		Created: outputs["created"],
 		Name: outputs["name"],
 		OrgId: outputs["orgId"],
+		ProjectId: outputs["projectId"],
+		Teams: outputs["teams"],
 		Id: outputs["id"],
 	}, nil
 }
 
 // A collection of arguments for invoking getProject.
 type GetProjectArgs struct {
+	// The unique ID for the project.
 	Name interface{}
+	// The unique ID for the project.
+	ProjectId interface{}
 }
 
 // A collection of values returned by getProject.
 type GetProjectResult struct {
 	ClusterCount interface{}
 	Created interface{}
+	// The name of the project you want to create. (Cannot be changed via this Provider after creation.)
 	Name interface{}
+	// The ID of the organization you want to create the project within.
+	// *`clusterCount` - The number of Atlas clusters deployed in the project.
+	// *`created` - The ISO-8601-formatted timestamp of when Atlas created the project.
+	// * `teams.#.team_id` - The unique identifier of the team you want to associate with the project. The team and project must share the same parent organization.
+	// * `teams.#.role_names` - Each string in the array represents a project role assigned to the team. Every user associated with the team inherits these roles.
+	// The following are valid roles:
+	// * `GROUP_OWNER`
+	// * `GROUP_READ_ONLY`
+	// * `GROUP_DATA_ACCESS_ADMIN`
+	// * `GROUP_DATA_ACCESS_READ_WRITE`
+	// * `GROUP_DATA_ACCESS_READ_ONLY`
+	// * `GROUP_CLUSTER_MANAGER`
 	OrgId interface{}
+	ProjectId interface{}
+	Teams interface{}
 	// id is the provider-assigned unique ID for this managed resource.
 	Id interface{}
 }

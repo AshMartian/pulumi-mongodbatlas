@@ -50,6 +50,16 @@ export interface ClusterBiConnector {
      */
     readPreference: string;
 }
+export interface ClusterLabel {
+    /**
+     * The key that you want to write.
+     */
+    key: string;
+    /**
+     * The value that you want to write.
+     */
+    value: string;
+}
 export interface ClusterReplicationSpec {
     /**
      * Unique identifer of the replication document for a zone in a Global Cluster.
@@ -89,6 +99,16 @@ export interface ClusterReplicationSpecRegionsConfig {
      * Name for the region specified.
      */
     regionName: string;
+}
+export interface DatabaseUserLabel {
+    /**
+     * The key that you want to write.
+     */
+    key: string;
+    /**
+     * The value that you want to write.
+     */
+    value: string;
 }
 export interface DatabaseUserRole {
     /**
@@ -274,6 +294,16 @@ export interface GetClusterBiConnector {
      */
     readPreference: string;
 }
+export interface GetClusterLabel {
+    /**
+     * The key that was set.
+     */
+    key: string;
+    /**
+     * The value that represents the key.
+     */
+    value: string;
+}
 export interface GetClusterReplicationSpec {
     /**
      * Unique identifer of the replication document for a zone in a Global Cluster.
@@ -336,13 +366,14 @@ export interface GetClustersResult {
      */
     clusterType: string;
     /**
-     * Indicates the size in gigabytes of the server’s root volume.
+     * Indicates the size in gigabytes of the server’s root volume (AWS/GCP Only).
      */
     diskSizeGb: number;
     /**
      * Indicates whether Encryption at Rest is enabled or disabled.
      */
     encryptionAtRestProvider: string;
+    labels: outputs.GetClustersResultLabel[];
     /**
      * Indicates the version of the cluster to deploy.
      */
@@ -364,7 +395,7 @@ export interface GetClustersResult {
      */
     mongoUriWithOptions: string;
     /**
-     * Name of the cluster as it appears in Atlas.
+     * The name of the current plugin
      */
     name: string;
     /**
@@ -376,6 +407,10 @@ export interface GetClustersResult {
      */
     paused: boolean;
     /**
+     * Flag that indicates if the cluster uses Point-in-Time backups.
+     */
+    pitEnabled: boolean;
+    /**
      * Flag indicating if the cluster uses Cloud Provider Snapshots for backups.
      */
     providerBackupEnabled: boolean;
@@ -384,7 +419,7 @@ export interface GetClustersResult {
      */
     providerDiskIops: number;
     /**
-     * Describes Azure disk type of the server’s root volume.
+     * Describes Azure disk type of the server’s root volume (Azure Only).
      */
     providerDiskTypeName: string;
     /**
@@ -440,6 +475,16 @@ export interface GetClustersResultBiConnector {
      */
     readPreference: string;
 }
+export interface GetClustersResultLabel {
+    /**
+     * The key that was set.
+     */
+    key: string;
+    /**
+     * The value that represents the key.
+     */
+    value: string;
+}
 export interface GetClustersResultReplicationSpec {
     /**
      * Unique identifer of the replication document for a zone in a Global Cluster.
@@ -480,6 +525,16 @@ export interface GetClustersResultReplicationSpecRegionsConfig {
      */
     regionName: string;
 }
+export interface GetDatabaseUserLabel {
+    /**
+     * The key that you want to write.
+     */
+    key: string;
+    /**
+     * The value that you want to write.
+     */
+    value: string;
+}
 export interface GetDatabaseUserRole {
     /**
      * Collection for which the role applies. You can specify a collection for the `read` and `readWrite` roles. If you do not specify a collection for `read` and `readWrite`, the role applies to all collections in the database (excluding some collections in the `system`. database).
@@ -493,9 +548,10 @@ export interface GetDatabaseUserRole {
 }
 export interface GetDatabaseUsersResult {
     /**
-     * Database on which the user has the specified role. A role on the `admin` database can include privileges that apply to the other databases.
+     * The user’s authentication database. A user must provide both a username and authentication database to log into MongoDB. In Atlas deployments of MongoDB, the authentication database is always the admin database.
      */
-    databaseName: string;
+    authDatabaseName: string;
+    labels: outputs.GetDatabaseUsersResultLabel[];
     /**
      * The unique ID for the project to get all database users.
      */
@@ -508,6 +564,20 @@ export interface GetDatabaseUsersResult {
      * Username for authenticating to MongoDB.
      */
     username: string;
+    /**
+     * X.509 method by which the provided username is authenticated.
+     */
+    x509Type: string;
+}
+export interface GetDatabaseUsersResultLabel {
+    /**
+     * The key that you want to write.
+     */
+    key: string;
+    /**
+     * The value that you want to write.
+     */
+    value: string;
 }
 export interface GetDatabaseUsersResultRole {
     /**
@@ -542,7 +612,7 @@ export interface GetNetworkContainersResult {
      */
     networkName: string;
     /**
-     * Cloud provider for this Network Peering connection. If omitted, Atlas sets this parameter to AWS.
+     * Cloud provider for this Network peering container. Accepted values are AWS, GCP, and Azure.
      */
     providerName: string;
     /**
@@ -645,24 +715,56 @@ export interface GetNetworkPeeringsResult {
      */
     vpcId: string;
 }
+export interface GetProjectTeam {
+    roleNames: string[];
+    teamId: string;
+}
 export interface GetProjectsResult {
     clusterCount: number;
     created: string;
+    /**
+     * Autogenerated Unique ID for this data source.
+     */
     id: string;
+    /**
+     * The name of the project you want to create. (Cannot be changed via this Provider after creation.)
+     */
     name: string;
+    /**
+     * The ID of the organization you want to create the project within.
+     * *`clusterCount` - The number of Atlas clusters deployed in the project.
+     * *`created` - The ISO-8601-formatted timestamp of when Atlas created the project.
+     * * `teams.#.team_id` - The unique identifier of the team you want to associate with the project. The team and project must share the same parent organization.
+     * * `teams.#.role_names` - Each string in the array represents a project role assigned to the team. Every user associated with the team inherits these roles.
+     * The following are valid roles:
+     * * `GROUP_OWNER`
+     * * `GROUP_READ_ONLY`
+     * * `GROUP_DATA_ACCESS_ADMIN`
+     * * `GROUP_DATA_ACCESS_READ_WRITE`
+     * * `GROUP_DATA_ACCESS_READ_ONLY`
+     * * `GROUP_CLUSTER_MANAGER`
+     */
     orgId: string;
+    teams: outputs.GetProjectsResultTeam[];
 }
-export interface ProjectIpWhitelistWhitelist {
+export interface GetProjectsResultTeam {
+    roleNames: string[];
+    teamId: string;
+}
+export interface ProjectTeam {
     /**
-     * The whitelist entry in Classless Inter-Domain Routing (CIDR) notation. Mutually exclusive with `ipAddress`.
+     * Each string in the array represents a project role you want to assign to the team. Every user associated with the team inherits these roles. You must specify an array even if you are only associating a single role with the team.
+     * The following are valid roles:
+     * * `GROUP_OWNER`
+     * * `GROUP_READ_ONLY`
+     * * `GROUP_DATA_ACCESS_ADMIN`
+     * * `GROUP_DATA_ACCESS_READ_WRITE`
+     * * `GROUP_DATA_ACCESS_READ_ONLY`
+     * * `GROUP_CLUSTER_MANAGER`
      */
-    cidrBlock: string;
+    roleNames: string[];
     /**
-     * Comment to add to the whitelist entry.
+     * The unique identifier of the team you want to associate with the project. The team and project must share the same parent organization.
      */
-    comment: string;
-    /**
-     * The whitelisted IP address. Mutually exclusive with `cidrBlock`.
-     */
-    ipAddress: string;
+    teamId: string;
 }

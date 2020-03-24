@@ -12,28 +12,31 @@ class DatabaseUser extends pulumi.CustomResource {
         let inputs = {};
         if (opts && opts.id) {
             const state = argsOrState;
+            inputs["authDatabaseName"] = state ? state.authDatabaseName : undefined;
             inputs["databaseName"] = state ? state.databaseName : undefined;
+            inputs["labels"] = state ? state.labels : undefined;
             inputs["password"] = state ? state.password : undefined;
             inputs["projectId"] = state ? state.projectId : undefined;
             inputs["roles"] = state ? state.roles : undefined;
             inputs["username"] = state ? state.username : undefined;
+            inputs["x509Type"] = state ? state.x509Type : undefined;
         }
         else {
             const args = argsOrState;
-            if (!args || args.databaseName === undefined) {
-                throw new Error("Missing required property 'databaseName'");
-            }
             if (!args || args.projectId === undefined) {
                 throw new Error("Missing required property 'projectId'");
             }
             if (!args || args.username === undefined) {
                 throw new Error("Missing required property 'username'");
             }
+            inputs["authDatabaseName"] = args ? args.authDatabaseName : undefined;
             inputs["databaseName"] = args ? args.databaseName : undefined;
+            inputs["labels"] = args ? args.labels : undefined;
             inputs["password"] = args ? args.password : undefined;
             inputs["projectId"] = args ? args.projectId : undefined;
             inputs["roles"] = args ? args.roles : undefined;
             inputs["username"] = args ? args.username : undefined;
+            inputs["x509Type"] = args ? args.x509Type : undefined;
         }
         if (!opts) {
             opts = {};

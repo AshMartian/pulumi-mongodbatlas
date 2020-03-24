@@ -7,6 +7,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/go/pulumi"
 )
 
+// `.getProjects` describe all Projects. This represents projects that have been created.
+// 
+// > **NOTE:** Groups and projects are synonymous terms. You may find `groupId` in the official documentation.
+//
+// > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/d/projects.html.markdown.
 func LookupProjects(ctx *pulumi.Context) (*GetProjectsResult, error) {
 	outputs, err := ctx.Invoke("mongodbatlas:index/getProjects:getProjects", nil)
 	if err != nil {

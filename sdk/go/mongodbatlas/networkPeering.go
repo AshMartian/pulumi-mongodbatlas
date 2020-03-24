@@ -8,10 +8,18 @@ import (
 	"github.com/pulumi/pulumi/sdk/go/pulumi"
 )
 
-// `.NetworkPeering` provides a Network Peering Connection resource. The resource lets you create, edit and delete network peering connections. The resource requires your Project ID.
-// 
+// `.NetworkPeering` provides a Network Peering Connection resource. The resource lets you create, edit and delete network peering connections. The resource requires your Project ID.  Ensure you have first created a Network Container.  See the networkContainer resource and examples below.
 // 
 // > **GCP AND AZURE ONLY:** You must enable Connect via Peering Only mode to use network peering.
+// 
+// > **AZURE ONLY:** To create the peering request with an Azure VNET, you must grant Atlas the following permissions on the virtual network.
+//     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/read
+//     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/write
+//     Microsoft.Network/virtualNetworks/virtualNetworkPeerings/delete
+//     Microsoft.Network/virtualNetworks/peer/action
+// For more information see https://docs.atlas.mongodb.com/security-vpc-peering/
+// 
+// > **Create a Whitelist:** Ensure you whitelist the private IP ranges of the subnets in which your application is hosted in order to connect to your Atlas cluster.  See the projectIpWhitelist resource.
 // 
 // > **NOTE:** Groups and projects are synonymous terms. You may find **group_id** in the official documentation.
 //
@@ -28,6 +36,9 @@ func NewNetworkPeering(ctx *pulumi.Context,
 	}
 	if args == nil || args.ProjectId == nil {
 		return nil, errors.New("missing required argument 'ProjectId'")
+	}
+	if args == nil || args.ProviderName == nil {
+		return nil, errors.New("missing required argument 'ProviderName'")
 	}
 	inputs := make(map[string]interface{})
 	if args == nil {
@@ -192,7 +203,7 @@ func (r *NetworkPeering) ErrorStateName() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["errorStateName"])
 }
 
-// GCP project ID of the owner of the network peer. 
+// GCP project ID of the owner of the network peer.
 func (r *NetworkPeering) GcpProjectId() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["gcpProjectId"])
 }
@@ -212,12 +223,12 @@ func (r *NetworkPeering) ProjectId() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["projectId"])
 }
 
-// Cloud provider for this VPC peering connection. If omitted, Atlas sets this parameter to AWS. (Possible Values `AWS`, `AZURE`, `GCP`).
+// Cloud provider for this VPC peering connection. (Possible Values `AWS`, `AZURE`, `GCP`).
 func (r *NetworkPeering) ProviderName() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["providerName"])
 }
 
-// Name of your Azure resource group. 
+// Name of your Azure resource group.
 func (r *NetworkPeering) ResourceGroupName() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["resourceGroupName"])
 }
@@ -274,7 +285,7 @@ type NetworkPeeringState struct {
 	ErrorState interface{}
 	// Error state, if any. The VPC peering connection error state value can be one of the following: `REJECTED`, `EXPIRED`, `INVALID_ARGUMENT`.
 	ErrorStateName interface{}
-	// GCP project ID of the owner of the network peer. 
+	// GCP project ID of the owner of the network peer.
 	GcpProjectId interface{}
 	// Name of the network peer to which Atlas connects.
 	NetworkName interface{}
@@ -282,9 +293,9 @@ type NetworkPeeringState struct {
 	PeerId interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
-	// Cloud provider for this VPC peering connection. If omitted, Atlas sets this parameter to AWS. (Possible Values `AWS`, `AZURE`, `GCP`).
+	// Cloud provider for this VPC peering connection. (Possible Values `AWS`, `AZURE`, `GCP`).
 	ProviderName interface{}
-	// Name of your Azure resource group. 
+	// Name of your Azure resource group.
 	ResourceGroupName interface{}
 	// Peer VPC CIDR block or subnet.
 	RouteTableCidrBlock interface{}
@@ -316,15 +327,15 @@ type NetworkPeeringArgs struct {
 	AzureSubscriptionId interface{}
 	// Unique identifier of the Atlas VPC container for the region. You can create an Atlas VPC container using the Create Container endpoint. You cannot create more than one container per region. To retrieve a list of container IDs, use the Get list of VPC containers endpoint.
 	ContainerId interface{}
-	// GCP project ID of the owner of the network peer. 
+	// GCP project ID of the owner of the network peer.
 	GcpProjectId interface{}
 	// Name of the network peer to which Atlas connects.
 	NetworkName interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
-	// Cloud provider for this VPC peering connection. If omitted, Atlas sets this parameter to AWS. (Possible Values `AWS`, `AZURE`, `GCP`).
+	// Cloud provider for this VPC peering connection. (Possible Values `AWS`, `AZURE`, `GCP`).
 	ProviderName interface{}
-	// Name of your Azure resource group. 
+	// Name of your Azure resource group.
 	ResourceGroupName interface{}
 	// Peer VPC CIDR block or subnet.
 	RouteTableCidrBlock interface{}

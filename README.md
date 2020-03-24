@@ -22,7 +22,7 @@ This package is available in many languages in the standard packaging formats, b
 
 This is required to have the pulumi resource executable.
 
-`pulumi plugin install resource --server https://github.com/blandman/pulumi-mongodbatlas/raw/master/plugin mongodbatlas 0.0.3`
+`pulumi plugin install resource --server https://github.com/blandman/pulumi-mongodbatlas/raw/master/plugin mongodbatlas 0.4.2`
 
 ### Node.js (Java/TypeScript)
 
@@ -75,6 +75,8 @@ export const atlasProject = new atlas.Project(`test-${pulumi.getProject()}-${pul
     orgId: config.require("atlasOrgId")
 }, {provider: atlasProvider});
 ```
+
+`pulumi up`
 
 # Reference
 

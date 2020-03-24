@@ -4,7 +4,69 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const pulumi = require("@pulumi/pulumi");
 const utilities = require("./utilities");
+/**
+ * `mongodbatlas..Project` describes a MongoDB Atlas Project. This represents a project that has been created.
+ *
+ * > **NOTE:** Groups and projects are synonymous terms. You may find groupId in the official documentation.
+ *
+ * ## Example Usage
+ *
+ * ### Using projectId attribute to query
+ * ```typescript
+ * import * as pulumi from "@pulumi/pulumi";
+ * import * as mongodbatlas from "@pulumi/mongodbatlas";
+ *
+ * const testMongodbatlasProject = new mongodbatlas.Project("test", {
+ *     orgId: "<ORG_ID>",
+ *     teams: [
+ *         {
+ *             roleNames: ["GROUP_OWNER"],
+ *             teamId: "5e0fa8c99ccf641c722fe645",
+ *         },
+ *         {
+ *             roleNames: [
+ *                 "GROUP_READ_ONLY",
+ *                 "GROUP_DATA_ACCESS_READ_WRITE",
+ *             ],
+ *             teamId: "5e1dd7b4f2a30ba80a70cd4rw",
+ *         },
+ *     ],
+ * });
+ * const testProject = testMongodbatlasProject.id.apply(id => mongodbatlas.getProject({
+ *     projectId: id,
+ * }));
+ * ```
+ *
+ * ### Using name attribute to query
+ * ```typescript
+ * import * as pulumi from "@pulumi/pulumi";
+ * import * as mongodbatlas from "@pulumi/mongodbatlas";
+ *
+ * const testMongodbatlasProject = new mongodbatlas.Project("test", {
+ *     orgId: "<ORG_ID>",
+ *     teams: [
+ *         {
+ *             roleNames: ["GROUP_OWNER"],
+ *             teamId: "5e0fa8c99ccf641c722fe645",
+ *         },
+ *         {
+ *             roleNames: [
+ *                 "GROUP_READ_ONLY",
+ *                 "GROUP_DATA_ACCESS_READ_WRITE",
+ *             ],
+ *             teamId: "5e1dd7b4f2a30ba80a70cd4rw",
+ *         },
+ *     ],
+ * });
+ * const testProject = testMongodbatlasProject.name.apply(name => mongodbatlas.getProject({
+ *     name: name,
+ * }));
+ * ```
+ *
+ * > This content is derived from https://github.com/terraform-providers/terraform-provider-mongodbatlas/blob/master/website/docs/d/project.html.markdown.
+ */
 function getProject(args, opts) {
+    args = args || {};
     if (!opts) {
         opts = {};
     }
@@ -13,6 +75,7 @@ function getProject(args, opts) {
     }
     const promise = pulumi.runtime.invoke("mongodbatlas:index/getProject:getProject", {
         "name": args.name,
+        "projectId": args.projectId,
     }, opts);
     return pulumi.utils.liftProperties(promise, opts);
 }
