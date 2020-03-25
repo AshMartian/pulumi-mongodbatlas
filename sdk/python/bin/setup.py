@@ -10,7 +10,7 @@ class InstallPluginCommand(install):
     def run(self):
         install.run(self)
         try:
-            check_call(['pulumi', 'plugin', 'install', 'resource', 'mongodbatlas', 'v0.4.2+dirty'])
+            check_call(['pulumi', 'plugin', 'install', 'resource', 'mongodbatlas', 'v0.4.1+dirty'])
         except OSError as error:
             if error.errno == errno.ENOENT:
                 print("""
@@ -18,7 +18,7 @@ class InstallPluginCommand(install):
                 It looks like `pulumi` is not installed on your system.
                 Please visit https://pulumi.com/ to install the Pulumi CLI.
                 You may try manually installing the plugin by running
-                `pulumi plugin install resource mongodbatlas v0.4.2+dirty`
+                `pulumi plugin install resource mongodbatlas v0.4.1+dirty`
                 """)
             else:
                 raise
@@ -28,7 +28,7 @@ def readme():
         return f.read()
 
 setup(name='pulumi_mongodbatlas',
-      version='0.4.2+dirty',
+      version='0.4.1+dirty',
       description='A Pulumi package for creating and managing mongodbatlas cloud resources.',
       long_description=readme(),
       long_description_content_type='text/markdown',

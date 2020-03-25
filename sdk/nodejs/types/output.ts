@@ -69,6 +69,14 @@ export interface ClusterLabel {
     value: string;
 }
 
+export interface ClusterPlugin {
+    /**
+     * Name of the cluster as it appears in Atlas. Once the cluster is created, its name cannot be changed.
+     */
+    name: string;
+    version: string;
+}
+
 export interface ClusterReplicationSpec {
     /**
      * Unique identifer of the replication document for a zone in a Global Cluster.
@@ -324,6 +332,17 @@ export interface GetClusterLabel {
     value: string;
 }
 
+export interface GetClusterPlugin {
+    /**
+     * Name of the cluster as it appears in Atlas. Once the cluster is created, its name cannot be changed.
+     */
+    name: string;
+    /**
+     * The current version of the plugin.
+     */
+    version: string;
+}
+
 export interface GetClusterReplicationSpec {
     /**
      * Unique identifer of the replication document for a zone in a Global Cluster.
@@ -364,6 +383,17 @@ export interface GetClusterReplicationSpecRegionsConfig {
      * Name for the region specified.
      */
     regionName: string;
+}
+
+export interface GetClustersPlugin {
+    /**
+     * The name of the current plugin
+     */
+    name: string;
+    /**
+     * The current version of the plugin.
+     */
+    version: string;
 }
 
 export interface GetClustersResult {

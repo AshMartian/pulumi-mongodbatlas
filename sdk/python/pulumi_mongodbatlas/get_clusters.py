@@ -13,7 +13,10 @@ class GetClustersResult:
     """
     A collection of values returned by getClusters.
     """
-    def __init__(__self__, project_id=None, results=None, id=None):
+    def __init__(__self__, plugin=None, project_id=None, results=None, id=None):
+        if plugin and not isinstance(plugin, dict):
+            raise TypeError("Expected argument 'plugin' to be a dict")
+        __self__.plugin = plugin
         if project_id and not isinstance(project_id, str):
             raise TypeError("Expected argument 'project_id' to be a str")
         __self__.project_id = project_id
@@ -35,6 +38,7 @@ class AwaitableGetClustersResult(GetClustersResult):
         if False:
             yield self
         return GetClustersResult(
+            plugin=self.plugin,
             project_id=self.project_id,
             results=self.results,
             id=self.id)
@@ -63,6 +67,7 @@ def get_clusters(project_id=None,opts=None):
     __ret__ = pulumi.runtime.invoke('mongodbatlas:index/getClusters:getClusters', __args__, opts=opts).value
 
     return AwaitableGetClustersResult(
+        plugin=__ret__.get('plugin'),
         project_id=__ret__.get('projectId'),
         results=__ret__.get('results'),
         id=__ret__.get('id'))

@@ -46,6 +46,7 @@ export interface GetClustersArgs {
  * A collection of values returned by getClusters.
  */
 export interface GetClustersResult {
+    readonly plugin: outputs.GetClustersPlugin;
     readonly projectId: string;
     /**
      * A list where each represents a Cluster. See Cluster below for more details.

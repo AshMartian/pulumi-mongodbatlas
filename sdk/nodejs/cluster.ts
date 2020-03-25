@@ -252,9 +252,6 @@ export class Cluster extends pulumi.CustomResource {
      * Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backupEnabled to be false or omitted.
      */
     public readonly encryptionAtRestProvider!: pulumi.Output<string>;
-    /**
-     * Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
-     */
     public readonly labels!: pulumi.Output<outputs.ClusterLabel[]>;
     /**
      * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
@@ -292,6 +289,7 @@ export class Cluster extends pulumi.CustomResource {
      * - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
      */
     public readonly pitEnabled!: pulumi.Output<boolean>;
+    public /*out*/ readonly plugin!: pulumi.Output<outputs.ClusterPlugin>;
     /**
      * The unique ID for the project to create the database user.
      */
@@ -383,6 +381,7 @@ export class Cluster extends pulumi.CustomResource {
             inputs["numShards"] = state ? state.numShards : undefined;
             inputs["paused"] = state ? state.paused : undefined;
             inputs["pitEnabled"] = state ? state.pitEnabled : undefined;
+            inputs["plugin"] = state ? state.plugin : undefined;
             inputs["projectId"] = state ? state.projectId : undefined;
             inputs["providerBackupEnabled"] = state ? state.providerBackupEnabled : undefined;
             inputs["providerDiskIops"] = state ? state.providerDiskIops : undefined;
@@ -437,6 +436,7 @@ export class Cluster extends pulumi.CustomResource {
             inputs["mongoUriUpdated"] = undefined /*out*/;
             inputs["mongoUriWithOptions"] = undefined /*out*/;
             inputs["paused"] = undefined /*out*/;
+            inputs["plugin"] = undefined /*out*/;
             inputs["srvAddress"] = undefined /*out*/;
             inputs["stateName"] = undefined /*out*/;
         }
@@ -490,9 +490,6 @@ export interface ClusterState {
      * Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backupEnabled to be false or omitted.
      */
     readonly encryptionAtRestProvider?: pulumi.Input<string>;
-    /**
-     * Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
-     */
     readonly labels?: pulumi.Input<pulumi.Input<inputs.ClusterLabel>[]>;
     /**
      * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
@@ -530,6 +527,7 @@ export interface ClusterState {
      * - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
      */
     readonly pitEnabled?: pulumi.Input<boolean>;
+    readonly plugin?: pulumi.Input<inputs.ClusterPlugin>;
     /**
      * The unique ID for the project to create the database user.
      */
@@ -626,9 +624,6 @@ export interface ClusterArgs {
      * Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backupEnabled to be false or omitted.
      */
     readonly encryptionAtRestProvider?: pulumi.Input<string>;
-    /**
-     * Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
-     */
     readonly labels?: pulumi.Input<pulumi.Input<inputs.ClusterLabel>[]>;
     /**
      * Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.

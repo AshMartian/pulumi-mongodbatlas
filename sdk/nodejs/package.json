@@ -1,6 +1,8 @@
 {
     "name": "pulumi-mongodbatlas",
-    "version": "0.4.2",
+    "version": "0.4.1",
+    "main": "bin/index.js",
+    "module": "bin/index.js",
     "description": "A Pulumi package for creating and managing mongodbatlas cloud resources.",
     "keywords": [
         "pulumi",

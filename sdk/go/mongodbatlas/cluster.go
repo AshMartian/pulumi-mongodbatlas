@@ -93,6 +93,7 @@ func NewCluster(ctx *pulumi.Context,
 	inputs["mongoUriUpdated"] = nil
 	inputs["mongoUriWithOptions"] = nil
 	inputs["paused"] = nil
+	inputs["plugin"] = nil
 	inputs["srvAddress"] = nil
 	inputs["stateName"] = nil
 	s, err := ctx.RegisterResource("mongodbatlas:index/cluster:Cluster", name, true, inputs, opts...)
@@ -127,6 +128,7 @@ func GetCluster(ctx *pulumi.Context,
 		inputs["numShards"] = state.NumShards
 		inputs["paused"] = state.Paused
 		inputs["pitEnabled"] = state.PitEnabled
+		inputs["plugin"] = state.Plugin
 		inputs["projectId"] = state.ProjectId
 		inputs["providerBackupEnabled"] = state.ProviderBackupEnabled
 		inputs["providerDiskIops"] = state.ProviderDiskIops
@@ -204,7 +206,6 @@ func (r *Cluster) EncryptionAtRestProvider() pulumi.StringOutput {
 	return (pulumi.StringOutput)(r.s.State["encryptionAtRestProvider"])
 }
 
-// Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
 func (r *Cluster) Labels() pulumi.ArrayOutput {
 	return (pulumi.ArrayOutput)(r.s.State["labels"])
 }
@@ -252,6 +253,10 @@ func (r *Cluster) Paused() pulumi.BoolOutput {
 // - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
 func (r *Cluster) PitEnabled() pulumi.BoolOutput {
 	return (pulumi.BoolOutput)(r.s.State["pitEnabled"])
+}
+
+func (r *Cluster) Plugin() pulumi.Output {
+	return r.s.State["plugin"]
 }
 
 // The unique ID for the project to create the database user.
@@ -347,7 +352,6 @@ type ClusterState struct {
 	DiskSizeGb interface{}
 	// Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backupEnabled to be false or omitted.
 	EncryptionAtRestProvider interface{}
-	// Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
 	Labels interface{}
 	// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
 	MongoDbMajorVersion interface{}
@@ -367,6 +371,7 @@ type ClusterState struct {
 	Paused interface{}
 	// - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, providerBackupEnabled must also be set to true.
 	PitEnabled interface{}
+	Plugin interface{}
 	// The unique ID for the project to create the database user.
 	ProjectId interface{}
 	// Flag indicating if the cluster uses Cloud Provider Snapshots for backups.
@@ -421,7 +426,6 @@ type ClusterArgs struct {
 	DiskSizeGb interface{}
 	// Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backupEnabled to be false or omitted.
 	EncryptionAtRestProvider interface{}
-	// Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
 	Labels interface{}
 	// Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `providerInstanceSizeName` is either M2 or M5.
 	MongoDbMajorVersion interface{}

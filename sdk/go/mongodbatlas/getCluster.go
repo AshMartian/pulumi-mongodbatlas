@@ -44,6 +44,7 @@ func LookupCluster(ctx *pulumi.Context, args *GetClusterArgs) (*GetClusterResult
 		NumShards: outputs["numShards"],
 		Paused: outputs["paused"],
 		PitEnabled: outputs["pitEnabled"],
+		Plugin: outputs["plugin"],
 		ProjectId: outputs["projectId"],
 		ProviderBackupEnabled: outputs["providerBackupEnabled"],
 		ProviderDiskIops: outputs["providerDiskIops"],
@@ -104,6 +105,7 @@ type GetClusterResult struct {
 	Paused interface{}
 	// Flag that indicates if the cluster uses Point-in-Time backups.
 	PitEnabled interface{}
+	Plugin interface{}
 	ProjectId interface{}
 	// Flag indicating if the cluster uses Cloud Provider Snapshots for backups.
 	ProviderBackupEnabled interface{}

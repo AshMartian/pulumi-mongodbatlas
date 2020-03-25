@@ -51,12 +51,6 @@ class Cluster(pulumi.CustomResource):
     Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backup_enabled to be false or omitted.
     """
     labels: pulumi.Output[list]
-    """
-    Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
-    
-      * `key` (`str`) - The key that you want to write.
-      * `value` (`str`) - The value that you want to write.
-    """
     mongo_db_major_version: pulumi.Output[str]
     """
     Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `provider_instance_size_name` is either M2 or M5.
@@ -93,6 +87,7 @@ class Cluster(pulumi.CustomResource):
     """
     - Flag that indicates if the cluster uses Point-in-Time backups. If set to true, provider_backup_enabled must also be set to true.
     """
+    plugin: pulumi.Output[dict]
     project_id: pulumi.Output[str]
     """
     The unique ID for the project to create the database user.
@@ -187,7 +182,6 @@ class Cluster(pulumi.CustomResource):
         :param pulumi.Input[str] cluster_type: Specifies the type of the cluster that you want to modify. You cannot convert a sharded cluster deployment to a replica set deployment.
         :param pulumi.Input[float] disk_size_gb: The size in gigabytes of the server’s root volume. You can add capacity by increasing this number, up to a maximum possible value of 4096 (i.e., 4 TB). This value must be a positive integer.
         :param pulumi.Input[str] encryption_at_rest_provider: Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backup_enabled to be false or omitted.
-        :param pulumi.Input[list] labels: Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
         :param pulumi.Input[str] mongo_db_major_version: Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `provider_instance_size_name` is either M2 or M5.
         :param pulumi.Input[str] name: Name of the cluster as it appears in Atlas. Once the cluster is created, its name cannot be changed.
         :param pulumi.Input[float] num_shards: Number of shards to deploy in the specified zone.
@@ -296,6 +290,7 @@ class Cluster(pulumi.CustomResource):
             __props__['mongo_uri_updated'] = None
             __props__['mongo_uri_with_options'] = None
             __props__['paused'] = None
+            __props__['plugin'] = None
             __props__['srv_address'] = None
             __props__['state_name'] = None
         super(Cluster, __self__).__init__(
@@ -305,7 +300,7 @@ class Cluster(pulumi.CustomResource):
             opts)
 
     @staticmethod
-    def get(resource_name, id, opts=None, advanced_configuration=None, auto_scaling_disk_gb_enabled=None, backing_provider_name=None, backup_enabled=None, bi_connector=None, cluster_id=None, cluster_type=None, disk_size_gb=None, encryption_at_rest_provider=None, labels=None, mongo_db_major_version=None, mongo_db_version=None, mongo_uri=None, mongo_uri_updated=None, mongo_uri_with_options=None, name=None, num_shards=None, paused=None, pit_enabled=None, project_id=None, provider_backup_enabled=None, provider_disk_iops=None, provider_disk_type_name=None, provider_encrypt_ebs_volume=None, provider_instance_size_name=None, provider_name=None, provider_region_name=None, provider_volume_type=None, replication_factor=None, replication_specs=None, srv_address=None, state_name=None):
+    def get(resource_name, id, opts=None, advanced_configuration=None, auto_scaling_disk_gb_enabled=None, backing_provider_name=None, backup_enabled=None, bi_connector=None, cluster_id=None, cluster_type=None, disk_size_gb=None, encryption_at_rest_provider=None, labels=None, mongo_db_major_version=None, mongo_db_version=None, mongo_uri=None, mongo_uri_updated=None, mongo_uri_with_options=None, name=None, num_shards=None, paused=None, pit_enabled=None, plugin=None, project_id=None, provider_backup_enabled=None, provider_disk_iops=None, provider_disk_type_name=None, provider_encrypt_ebs_volume=None, provider_instance_size_name=None, provider_name=None, provider_region_name=None, provider_volume_type=None, replication_factor=None, replication_specs=None, srv_address=None, state_name=None):
         """
         Get an existing Cluster resource's state with the given name, id, and optional extra
         properties used to qualify the lookup.
@@ -323,7 +318,6 @@ class Cluster(pulumi.CustomResource):
         :param pulumi.Input[str] cluster_type: Specifies the type of the cluster that you want to modify. You cannot convert a sharded cluster deployment to a replica set deployment.
         :param pulumi.Input[float] disk_size_gb: The size in gigabytes of the server’s root volume. You can add capacity by increasing this number, up to a maximum possible value of 4096 (i.e., 4 TB). This value must be a positive integer.
         :param pulumi.Input[str] encryption_at_rest_provider: Set the Encryption at Rest parameter.  Possible values are AWS, GCP, AZURE or NONE.  Requires M10 or greater and for backup_enabled to be false or omitted.
-        :param pulumi.Input[list] labels: Array containing key-value pairs that tag and categorize the cluster. Each key and value has a maximum length of 255 characters. You cannot set the key `Infrastructure Tool`, it is used for internal purposes to track aggregate usage.
         :param pulumi.Input[str] mongo_db_major_version: Version of the cluster to deploy. Atlas supports the following MongoDB versions for M10+ clusters: `3.6`, `4.0`, or `4.2`. You must set this value to `4.2` if `provider_instance_size_name` is either M2 or M5.
         :param pulumi.Input[str] mongo_db_version: Version of MongoDB the cluster runs, in `major-version`.`minor-version` format.
         :param pulumi.Input[str] mongo_uri: Base connection string for the cluster. Atlas only displays this field after the cluster is operational, not while it builds the cluster.
@@ -376,6 +370,11 @@ class Cluster(pulumi.CustomResource):
           * `key` (`pulumi.Input[str]`) - The key that you want to write.
           * `value` (`pulumi.Input[str]`) - The value that you want to write.
         
+        The **plugin** object supports the following:
+        
+          * `name` (`pulumi.Input[str]`) - Name of the cluster as it appears in Atlas. Once the cluster is created, its name cannot be changed.
+          * `version` (`pulumi.Input[str]`)
+        
         The **replication_specs** object supports the following:
         
           * `id` (`pulumi.Input[str]`) - Unique identifer of the replication document for a zone in a Global Cluster.
@@ -414,6 +413,7 @@ class Cluster(pulumi.CustomResource):
         __props__["num_shards"] = num_shards
         __props__["paused"] = paused
         __props__["pit_enabled"] = pit_enabled
+        __props__["plugin"] = plugin
         __props__["project_id"] = project_id
         __props__["provider_backup_enabled"] = provider_backup_enabled
         __props__["provider_disk_iops"] = provider_disk_iops

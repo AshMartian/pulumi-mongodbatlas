@@ -69,6 +69,14 @@ export interface ClusterLabel {
     value?: pulumi.Input<string>;
 }
 
+export interface ClusterPlugin {
+    /**
+     * Name of the cluster as it appears in Atlas. Once the cluster is created, its name cannot be changed.
+     */
+    name?: pulumi.Input<string>;
+    version?: pulumi.Input<string>;
+}
+
 export interface ClusterReplicationSpec {
     /**
      * Unique identifer of the replication document for a zone in a Global Cluster.

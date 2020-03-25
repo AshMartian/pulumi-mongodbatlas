@@ -26,6 +26,7 @@ func LookupClusters(ctx *pulumi.Context, args *GetClustersArgs) (*GetClustersRes
 		return nil, err
 	}
 	return &GetClustersResult{
+		Plugin: outputs["plugin"],
 		ProjectId: outputs["projectId"],
 		Results: outputs["results"],
 		Id: outputs["id"],
@@ -40,6 +41,7 @@ type GetClustersArgs struct {
 
 // A collection of values returned by getClusters.
 type GetClustersResult struct {
+	Plugin interface{}
 	ProjectId interface{}
 	// A list where each represents a Cluster. See Cluster below for more details.
 	Results interface{}

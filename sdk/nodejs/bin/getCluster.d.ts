@@ -94,6 +94,7 @@ export interface GetClusterResult {
      * Flag that indicates if the cluster uses Point-in-Time backups.
      */
     readonly pitEnabled: boolean;
+    readonly plugin: outputs.GetClusterPlugin;
     readonly projectId: string;
     /**
      * Flag indicating if the cluster uses Cloud Provider Snapshots for backups.

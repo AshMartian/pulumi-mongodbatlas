@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pulumi-mongodbatlas
-Version: 0.4.2+dirty
+Version: 0.4.1+dirty
 Summary: A Pulumi package for creating and managing mongodbatlas cloud resources.
 Home-page: https://pulumi.io
 License: Apache-2.0

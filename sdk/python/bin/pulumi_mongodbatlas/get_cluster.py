@@ -13,7 +13,7 @@ class GetClusterResult:
     """
     A collection of values returned by getCluster.
     """
-    def __init__(__self__, auto_scaling_disk_gb_enabled=None, backing_provider_name=None, backup_enabled=None, bi_connector=None, cluster_type=None, disk_size_gb=None, encryption_at_rest_provider=None, labels=None, mongo_db_major_version=None, mongo_db_version=None, mongo_uri=None, mongo_uri_updated=None, mongo_uri_with_options=None, name=None, num_shards=None, paused=None, pit_enabled=None, project_id=None, provider_backup_enabled=None, provider_disk_iops=None, provider_disk_type_name=None, provider_encrypt_ebs_volume=None, provider_instance_size_name=None, provider_name=None, provider_region_name=None, provider_volume_type=None, replication_factor=None, replication_specs=None, srv_address=None, state_name=None, id=None):
+    def __init__(__self__, auto_scaling_disk_gb_enabled=None, backing_provider_name=None, backup_enabled=None, bi_connector=None, cluster_type=None, disk_size_gb=None, encryption_at_rest_provider=None, labels=None, mongo_db_major_version=None, mongo_db_version=None, mongo_uri=None, mongo_uri_updated=None, mongo_uri_with_options=None, name=None, num_shards=None, paused=None, pit_enabled=None, plugin=None, project_id=None, provider_backup_enabled=None, provider_disk_iops=None, provider_disk_type_name=None, provider_encrypt_ebs_volume=None, provider_instance_size_name=None, provider_name=None, provider_region_name=None, provider_volume_type=None, replication_factor=None, replication_specs=None, srv_address=None, state_name=None, id=None):
         if auto_scaling_disk_gb_enabled and not isinstance(auto_scaling_disk_gb_enabled, bool):
             raise TypeError("Expected argument 'auto_scaling_disk_gb_enabled' to be a bool")
         __self__.auto_scaling_disk_gb_enabled = auto_scaling_disk_gb_enabled
@@ -113,6 +113,9 @@ class GetClusterResult:
         """
         Flag that indicates if the cluster uses Point-in-Time backups.
         """
+        if plugin and not isinstance(plugin, dict):
+            raise TypeError("Expected argument 'plugin' to be a dict")
+        __self__.plugin = plugin
         if project_id and not isinstance(project_id, str):
             raise TypeError("Expected argument 'project_id' to be a str")
         __self__.project_id = project_id
@@ -223,6 +226,7 @@ class AwaitableGetClusterResult(GetClusterResult):
             num_shards=self.num_shards,
             paused=self.paused,
             pit_enabled=self.pit_enabled,
+            plugin=self.plugin,
             project_id=self.project_id,
             provider_backup_enabled=self.provider_backup_enabled,
             provider_disk_iops=self.provider_disk_iops,
@@ -281,6 +285,7 @@ def get_cluster(name=None,project_id=None,opts=None):
         num_shards=__ret__.get('numShards'),
         paused=__ret__.get('paused'),
         pit_enabled=__ret__.get('pitEnabled'),
+        plugin=__ret__.get('plugin'),
         project_id=__ret__.get('projectId'),
         provider_backup_enabled=__ret__.get('providerBackupEnabled'),
         provider_disk_iops=__ret__.get('providerDiskIops'),

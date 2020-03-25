@@ -26,7 +26,7 @@ require (
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/stretchr/testify v1.4.1-0.20191106224347-f1bd0923b832
-	github.com/terraform-providers/terraform-provider-mongodbatlas v0.4.2
+	github.com/terraform-providers/terraform-provider-mongodbatlas v0.4.1
 	golang.org/x/sys v0.0.0-20191228213918-04cbcbbfeed8 // indirect
 	golang.org/x/tools v0.0.0-20191230220329-2aa90c603ae3 // indirect
 	gopkg.in/ini.v1 v1.51.1 // indirect

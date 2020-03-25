@@ -212,6 +212,7 @@ class Cluster extends pulumi.CustomResource {
             inputs["numShards"] = state ? state.numShards : undefined;
             inputs["paused"] = state ? state.paused : undefined;
             inputs["pitEnabled"] = state ? state.pitEnabled : undefined;
+            inputs["plugin"] = state ? state.plugin : undefined;
             inputs["projectId"] = state ? state.projectId : undefined;
             inputs["providerBackupEnabled"] = state ? state.providerBackupEnabled : undefined;
             inputs["providerDiskIops"] = state ? state.providerDiskIops : undefined;
@@ -267,6 +268,7 @@ class Cluster extends pulumi.CustomResource {
             inputs["mongoUriUpdated"] = undefined /*out*/;
             inputs["mongoUriWithOptions"] = undefined /*out*/;
             inputs["paused"] = undefined /*out*/;
+            inputs["plugin"] = undefined /*out*/;
             inputs["srvAddress"] = undefined /*out*/;
             inputs["stateName"] = undefined /*out*/;
         }
